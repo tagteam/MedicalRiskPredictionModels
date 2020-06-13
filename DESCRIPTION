@@ -5,7 +5,7 @@ Version: 2020.06.13
 Date: 2020-06-13
 Author: Thomas Alexander Gerds
 Depends:
-    R (>= 3.5.0), riskRegresion (>= 2020.2.5)
+    R (>= 3.5.0), riskRegression (>= 2020.2.5)
 Maintainer: Thomas Alexander Gerds <tag@biostat.ku.dk>
 Description: The package provides synthetic computer modified data all the visible R-codes of the book  
 License: GPL (>= 2)
