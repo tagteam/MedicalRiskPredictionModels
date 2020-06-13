@@ -1,0 +1,184 @@
+# Chunk: 1-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+x <- Score(list(fit),formula=ohss~1,data=ivftest,summary="riskQuantiles")
+boxplot(x)
+abline(v=mean(ivftest$ohss),lty=2)
+abline(v=mean(predictRisk(fit,newdata=ivftest)),lty=3)
+#+END_SRC
+
+# Chunk: 2-------
+#+BEGIN_SRC R  :results output  :exports both  :session *R* :cache yes
+# R-code
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="brier",summary="ipa")
+#+END_SRC
+
+# Chunk: 3-------
+#+BEGIN_SRC R  :results output  :exports both  :session *R* :cache yes
+# R-code
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="auc")
+#+END_SRC
+
+# Chunk: 4-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
+x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
+	   plots="ROC")
+plotROC(x)
+#+END_SRC
+
+# Chunk: 5-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
+x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
+	    plots="calibration")
+plotCalibration(x,bars=1,rug=1,q=10)
+#+END_SRC
+
+# Chunk: 6-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+plotCalibration(x,bars=1,q=3)
+#+END_SRC
+
+# Chunk: 7-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+plotCalibration(x)
+#+END_SRC
+
+# Chunk: 8-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("My-model"=fit),
+	   formula=Surv(survtime,survstatus)~1, data=octest,
+	   times=120, summary=c("riskQuantiles"), null.model=0)
+boxplot(x,event.labels=c("Overall","Dead","Alive"),outcome.label="10-year\nmortality")
+#+END_SRC
+
+# Chunk: 9-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+# Kaplan-Meier:
+F <- prodlim(Hist(survtime,survstatus)~1,data=octest)
+plot(F)
+# reverse Kaplan-Meier
+G <- prodlim(Hist(survtime,survstatus)~1,data=octest,reverse=1)
+plot(G)
+#+END_SRC
+
+# Chunk: 10-------
+#+BEGIN_SRC R :exports both :results output :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("Cox"=fit),
+	   data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,
+	   metrics="brier")
+x
+#+END_SRC
+
+# Chunk: 11-------
+#+BEGIN_SRC R :exports both :results output :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("Cox regression"=fit),
+	   data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,
+	   metrics="auc")
+x
+#+END_SRC
+
+# Chunk: 12-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
+x <- Score(list("Cox"=fit),data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,plots="ROC")
+plotROC(x, plot.main="Outcome: 10 year all-cause mortality",auc=1)
+#+END_SRC
+
+# Chunk: 13-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
+x <- Score(list("Cox"=fit), data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120, plots="calibration")
+a <- plotCalibration(x, pseudo=0, rug=1, cens.method="local",
+		plot.main="Outcome: 10 year all-cause mortality")
+#+END_SRC
+
+# Chunk: 14-------
+#+BEGIN_SRC R :exports code :results output :session *R* :cache yes
+# R-code
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+Score(list("CSC"=fit),
+      data=astest,
+      formula=Hist(asprogtime,asprog)~1,
+      times=3,
+      metrics="brier",
+      cause="progression")
+#+END_SRC
+
+# Chunk: 15-------
+#+BEGIN_SRC R :exports both :results output :session *R* :cache yes
+# R-code
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+Score(list("CSC"=fit),data=astest,formula=Hist(asprogtime,asprog)~1,times=3,metrics="auc",cause="progression")
+#+END_SRC
+
+# Chunk: 16-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+plotROC(x,plot.main="Outcome: 3 year cancer progression")
+#+END_SRC
+
+# Chunk: 17-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+x <- Score(list("CSC"=fit), data=astest,
+	   formula=Hist(asprogtime,asprog)~1, times=3,
+	   plots="calibration", cause="progression")
+plotCalibration(x,cens.method="local")
+#+END_SRC
+
+# Chunk: 18-------
+#+BEGIN_SRC R  :results output   :exports both  :session *R* :cache yes
+# R-code
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+                Hist(asprogtime,asprog)~age),
+           data=astrain,cause="progression")
+x <- Score(list("CSC"=fit),cause="progression",contrasts=FALSE,
+           data=astest, formula=Hist(asprogtime,asprog)~1,
+           times=3, summary="ipa",metrics="brier")
+x
+ #+END_SRC
+
+# Chunk: 19-------
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
+# R-code
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,
+	     data=octrain, x=1L)
+x <- Score(list("Cox"=fit),
+	   data=octest, formula=Surv(survtime,survstatus)~1,
+	   times=seq(12,120,12), se.fit=0, contrasts=FALSE,
+	   summary="ipa", contrast=FALSE)
+#+END_SRC
+
