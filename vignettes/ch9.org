@@ -1,10 +1,12 @@
+#+superman-export-target: rmd/html
 
-#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
-source("data-preparation.R")
+#+BEGIN_SRC R :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache no
+library(MedicalRiskPredictionModels)
+dataMRPM()
 #+END_SRC
 
 # Chunk: 1-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk1
 B <- 200
 ivftrain.small <- ivftrain[sample(1:NROW(ivftrain),size=50)]
@@ -33,7 +35,7 @@ abline(h=0,col=2)
 #+END_SRC
 
 # Chunk: 2-------
-#+BEGIN_SRC R  :results output :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk2
 library(PredictABEL) # provides the re-classification table
 OHSSprevalence <- mean(ivftrain$OHSS=="Yes")
@@ -59,7 +61,7 @@ reclassification(data=ivftest,
 #+END_SRC
 
 # Chunk: 3-------
-#+BEGIN_SRC R  :results output :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk3
 x <- Score(list("Conventional model"=p1,"Exaggerated model"=p2),
            data=ivftest,

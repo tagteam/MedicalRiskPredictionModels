@@ -1,10 +1,12 @@
+#+superman-export-target: rmd/html
 
-#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
-source("data-preparation.R")
+#+BEGIN_SRC R :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache no
+library(MedicalRiskPredictionModels)
+dataMRPM()
 #+END_SRC
 
 # Chunk: 1-------
-#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes  :eval never
+#+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  :eval never
 # Chunk1
 library(data.table)
 oc[,survtime.5years:=pmin(survtime,60)] # stop time after 5 years
@@ -14,7 +16,7 @@ oc[,.(survtime,survstatus,survtime.5years,survstatus.5years)]
 #+END_SRC
 
 # Chunk: 2-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk2
 # logistic regression in learn data
 nullmodel <- glm(ohss~1,data=ivftrain,family="binomial") 
@@ -25,7 +27,7 @@ ivftest[1:5,.(cyclelen,bmi,age,smoking,ant.foll,risk.null)]
 #+END_SRC
 
 # Chunk: 3-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk3
 library(riskRegression)
 # Kaplan-Meier estimate in training set
@@ -38,7 +40,7 @@ octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)]
 #+END_SRC
 
 # Chunk: 4-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk4
 library(riskRegression)
 # Aalen-Johansen estimate in training set
@@ -51,14 +53,14 @@ astest[1:5,.(age5,psa,ct1,diaggs,aj.progrisk3,aj.deathrisk3)]
 #+END_SRC
 
 # Chunk: 5-------
-#+BEGIN_SRC R :exports code :results output   :session *R* :cache yes 
+#+BEGIN_SRC R :exports code :eval (never-plain-export) :results output   :session *R* :cache yes 
 # Chunk5
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
 publish(fit,intercept=1)
 #+END_SRC
 
 # Chunk: 6-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk6
 library(data.table)
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
@@ -68,7 +70,7 @@ nd
 #+END_SRC
 
 # Chunk: 7-------
-#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk7
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
@@ -76,7 +78,7 @@ publish(fit)
 #+END_SRC
 
 # Chunk: 8-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk8
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
@@ -86,14 +88,14 @@ nd
 #+END_SRC
 
 # Chunk: 9-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk9
 fit <- CSC(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain)
 publish(fit,diaggs="Gleason score",ct1="Clinical stage")
 #+END_SRC
 
 # Chunk: 10-------
-#+BEGIN_SRC R :exports both :results output raw drawer  :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes 
 # Chunk10
 fit <- FGR(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain,
            cause="progression")
@@ -101,21 +103,21 @@ publish(fit)
 #+END_SRC
 
 # Chunk: 11-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk11
 ivftrain[,age5:=age/5] # odds ratio per 5 year increase of age
 fit <- glm(ohss~age5,data=ivftrain,family="binomial")
 #+END_SRC
 
 # Chunk: 12-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk12
 library(rms)
 fit <- lrm(ohss~rcs(age),data=ivftrain)
 #+END_SRC
 
 # Chunk: 13-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk13
 library(rms)
 # fit Cox regression models
@@ -139,7 +141,7 @@ publish(nd,digits=1)
 #+END_SRC
 
 # Chunk: 14-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk14
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
@@ -154,7 +156,7 @@ cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
 #+END_SRC
 
 # Chunk: 15-------
-#+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 # Chunk15
 fit1 <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family="binomial")
 fit2 <- glm(ohss~ant.foll*smoking+age,data=ivftrain,family="binomial")
@@ -168,7 +170,7 @@ cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
 #+END_SRC
 
 # Chunk: 16-------
-#+BEGIN_SRC R :exports code :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports code :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 # Chunk16
 library(rms)
 fit1 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain)
@@ -187,14 +189,14 @@ cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
 #+END_SRC
 
 # Chunk: 17-------
-#+BEGIN_SRC R  :results output   :exports both  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output   :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk17
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
             ,data=octrain,y=1,x=1)
 #+END_SRC
 
 # Chunk: 18-------
-#+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk18
 tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,data=octrain,
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
@@ -202,7 +204,7 @@ tab1
 #+END_SRC
 
 # Chunk: 19-------
-#+BEGIN_SRC R  :results output   :exports code  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output   :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk19
 ivf[,set:=factor(train,levels=c(TRUE,FALSE),
                  labels=c("Training","Validation"))]
@@ -212,21 +214,21 @@ tab1
 #+END_SRC
 
 # Chunk: 20-------
-#+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk20
 tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followup.time=5)
 tab2
 #+END_SRC
 
 # Chunk: 21-------
-#+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk21
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
 publish(fit,probindex=TRUE)
 #+END_SRC
 
 # Chunk: 22-------
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk22
 fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
            data=astrain, times=5, cause="progression")
@@ -234,7 +236,7 @@ publish(fit)
 #+END_SRC
 
 # Chunk: 23-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk23 
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
@@ -242,7 +244,7 @@ plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
 #+END_SRC
 
 # Chunk: 24-------
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk24 
 u <- datadist(octrain)
 options(datadist="u")
@@ -258,7 +260,7 @@ plot(nom, xfrac=.5)
 #+END_SRC
 
 # Chunk: 25-------
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes 
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :eval (never-plain-export) :session *R* :cache yes 
 nm.bin <- glm(ohss~1,data=ivftrain,family="binomial")
 cat("Training data set:\n")
 ivftrain[,addmargins(table(ohss))]
@@ -269,39 +271,39 @@ ivftest[,list("risk"=sprintf("%1.1f",100*prop.table(table(ohss))[2]))]
 #+END_SRC
 
 # Chunk: 26-------
-#+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model11 <- glm(ohss~smoking,data=ivftrain,family="binomial")
 publish(Model11,intercept=1,org=TRUE,digits=3)
 #+END_SRC
 
 # Chunk: 27-------
-#+BEGIN_SRC R :exports both :results output   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
 Model11 <- glm(ohss~smoking,data=ivftrain,family="binomial")
 new.bin <- data.frame(smoking=factor(c("Yes","No")))
 cat(sprintf("%1.1f",100*predictRisk(Model11,newdata=new.bin)),"\n")
 #+END_SRC
 
 # Chunk: 28-------
-#+BEGIN_SRC R :exports both :results output raw drawer  :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes 
 km <- prodlim(Hist(survtime,survstatus)~1,data=octrain)
 cat(sprintf("%1.1f",100*predictRisk(km,times=120,newdata=data.frame(age=c(28,74),tumorthickness=c(0.3,0.1)))),"\n")
 #+END_SRC
 
 # Chunk: 29-------
-#+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model21 <- coxph(Surv(survtime, survstatus)~grade+gender,data=octrain,x=TRUE)
 publish(Model21,org=TRUE)
 #+END_SRC
 
 # Chunk: 30-------
-#+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model21 <- coxph(Surv(survtime, survstatus)~grade+gender,data=octrain,x=TRUE)
 new.surv <- expand.grid(grade=c("Well","Moderate","Poor"),gender=c("Male","Female"))
 org(cbind(new.surv,"10-year risk"=sprintf("%1.1f",100*predictRisk(Model21,newdata=new.surv,times=120))))
 #+END_SRC
 
 # Chunk: 31-------
-#+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model22 <- coxph(Surv(survtime,survstatus)~tumorthickness,data=octrain,y=1L,x=1L)
 org(Model22)
 cat("\n")
@@ -310,7 +312,7 @@ org(cbind(nd,"10-year risk"=sprintf("%1.1f",100*predictRisk(Model22,newdata=nd,t
 #+END_SRC
 
 # Chunk: 32-------
-#+BEGIN_SRC R :exports both :results output raw drawer  :session *R* :cache yes :eval never
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes :eval never
 library(penalized)
 library(glmnet)
 OC <- octrain[!is.na(tumorthickness)&!is.na(grade)]
@@ -326,7 +328,7 @@ plot(fit)
 #+END_SRC
 
 # Chunk: 33-------
-#+BEGIN_SRC R :exports both :results output raw drawer  :session *R* :cache yes :eval never
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes :eval never
 library(smcfcs)
 oc0 <- data.frame(oc[,.(survtime,survstatus,gender,tumorthickness)])
 oc0i <- smcfcs(oc0,smformula=Surv(survtime,survstatus)~gender+tumorthickness,
@@ -336,13 +338,13 @@ oc0i <- smcfcs(oc0,smformula=Surv(survtime,survstatus)~gender+tumorthickness,
 #+END_SRC
 
 # Chunk: 34-------
-#+BEGIN_SRC R :exports both :results output raw :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw :session *R* :cache yes 
 nm.cr <- prodlim(Hist(asprogtime,asprog)~1,data=astrain)
 cat(sprintf("%1.1f",100*predictRisk(nm.cr,times=3,cause="progression",newdata=data.frame(age=c(28,74),psa=c(-1.3,-5.8)))),"\n")
 #+END_SRC
 
 # Chunk: 35-------
-#+BEGIN_SRC R :exports both :results output raw drawer :session *R* :cache yes 
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer :session *R* :cache yes 
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
 nd=expand.grid(diaggs=c("GNA","3 and 3","3 and 4"),ct1=c("cT1","cT2"),psa=c(-3,-1))
