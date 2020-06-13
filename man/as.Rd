@@ -5,7 +5,7 @@
 \alias{as}
 \title{as}
 \format{
-A data frame with 217 observations on the following 11 variables.
+A data frame with 217 observations on the following 10 variables.
 \describe{
 \item{age5}{Age in years divided by 5}
 \item{psa}{psa}
