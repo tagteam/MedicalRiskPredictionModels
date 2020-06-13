@@ -1,0 +1,170 @@
+```{r   }
+library(MedicalRiskPredictionModels)
+dataMRPM() 
+```
+
+```{r   }
+# Chunk1
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+x <- Score(list(fit),formula=ohss~1,data=ivftest,summary="riskQuantiles")
+boxplot(x)
+abline(v=mean(ivftest$ohss),lty=2)
+abline(v=mean(predictRisk(fit,newdata=ivftest)),lty=3) 
+```
+
+```{r   }
+# Chunk2
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="brier",summary="ipa") 
+```
+
+```{r   }
+# Chunk3
+fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
+Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="auc") 
+```
+
+```{r   }
+# Chunk4
+fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
+x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
+	   plots="ROC")
+plotROC(x) 
+```
+
+```{r   }
+# Chunk5
+fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
+x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
+	    plots="calibration")
+plotCalibration(x,bars=1,rug=1,q=10) 
+```
+
+```{r   }
+# Chunk6
+plotCalibration(x,bars=1,q=3) 
+```
+
+```{r   }
+# Chunk7
+plotCalibration(x) 
+```
+
+```{r   }
+# Chunk8
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("My-model"=fit),
+	   formula=Surv(survtime,survstatus)~1, data=octest,
+	   times=120, summary=c("riskQuantiles"), null.model=0)
+boxplot(x,event.labels=c("Overall","Dead","Alive"),outcome.label="10-year\nmortality") 
+```
+
+```{r   }
+# Chunk9
+# Kaplan-Meier:
+F <- prodlim(Hist(survtime,survstatus)~1,data=octest)
+plot(F)
+# reverse Kaplan-Meier
+G <- prodlim(Hist(survtime,survstatus)~1,data=octest,reverse=1)
+plot(G) 
+```
+
+```{r   }
+# Chunk10
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("Cox"=fit),
+	   data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,
+	   metrics="brier")
+x 
+```
+
+```{r   }
+# Chunk11
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
+x <- Score(list("Cox regression"=fit),
+	   data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,
+	   metrics="auc")
+x 
+```
+
+```{r   }
+# Chunk12
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
+x <- Score(list("Cox"=fit),data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120,plots="ROC")
+plotROC(x, plot.main="Outcome: 10 year all-cause mortality",auc=1) 
+```
+
+```{r   }
+# Chunk13
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
+x <- Score(list("Cox"=fit), data=octest,
+	   formula=Surv(survtime,survstatus)~1,
+	   times=120, plots="calibration")
+a <- plotCalibration(x, pseudo=0, rug=1, cens.method="local",
+		plot.main="Outcome: 10 year all-cause mortality") 
+```
+
+```{r   }
+# Chunk14
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+Score(list("CSC"=fit),
+      data=astest,
+      formula=Hist(asprogtime,asprog)~1,
+      times=3,
+      metrics="brier",
+      cause="progression") 
+```
+
+```{r   }
+# Chunk15
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+Score(list("CSC"=fit),data=astest,formula=Hist(asprogtime,asprog)~1,times=3,metrics="auc",cause="progression") 
+```
+
+```{r   }
+# Chunk16
+plotROC(x,plot.main="Outcome: 3 year cancer progression") 
+```
+
+```{r   }
+# Chunk17
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+x <- Score(list("CSC"=fit), data=astest,
+	   formula=Hist(asprogtime,asprog)~1, times=3,
+	   plots="calibration", cause="progression")
+plotCalibration(x,cens.method="local") 
+```
+
+ ```{r   }
+ # Chunk18
+ fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		 Hist(asprogtime,asprog)~age),
+	    data=astrain,cause="progression")
+ x <- Score(list("CSC"=fit),cause="progression",contrasts=FALSE,
+	    data=astest, formula=Hist(asprogtime,asprog)~1,
+	    times=3, summary="ipa",metrics="brier")
+ x 
+ ```
+
+```{r   }
+# Chunk19
+fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,
+	     data=octrain, x=1L)
+x <- Score(list("Cox"=fit),
+	   data=octest, formula=Surv(survtime,survstatus)~1,
+	   times=seq(12,120,12), se.fit=0, contrasts=FALSE,
+	   summary="ipa", contrast=FALSE) 
+```
+
