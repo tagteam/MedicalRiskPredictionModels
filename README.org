@@ -7,8 +7,8 @@ via
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
 library(devtools)
-install_github("tagteam/medical-risk-prediction-models")
+install_github("tagteam/MedicalRiskPredictionModels")
 
 #+END_SRC
-clone or
-download all files. 
+
+
