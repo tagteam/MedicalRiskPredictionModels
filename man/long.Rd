@@ -5,11 +5,12 @@
 \alias{long}
 \title{long}
 \format{
-A data frame with 18 observations on the following 3 variables.
+A data frame with 18 observations on the following 4 variables.
 \describe{
 \item{subject}{subject}
 \item{psadate}{psadate}
 \item{psa}{psa}
+\item{psa.doublingstime}{psa doubling-time}
 }
 }
 \source{

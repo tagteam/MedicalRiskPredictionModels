@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 13 2020 (11:02) 
 ## Version: 
-## Last-Updated: Jun 13 2020 (11:38) 
+## Last-Updated: Jun 13 2020 (12:26) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 8
+##     Update #: 12
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -125,11 +125,12 @@ NULL
 #' 
 #' @name long
 #' @docType data
-#' @format A data frame with 18 observations on the following 3 variables.
+#' @format A data frame with 18 observations on the following 4 variables.
 #' \describe{
 #' \item{subject}{subject}
 #' \item{psadate}{psadate}
 #' \item{psa}{psa}
+#' \item{psa.doublingstime}{psa doubling-time}
 #' }
 #'
 #' 
@@ -140,8 +141,28 @@ NULL
 #' data(long)
 NULL
 
-
-
+#' ttedata 
+#'
+#' This is a computer generated data set for illustration purposes
+#' 
+#' @name ttedata
+#' @docType data
+#' @format A data frame with 5 observations on the following 5 variables.
+#' \describe{
+#' \item{id}{id}
+#' \item{af.date}{af date}
+#' \item{death.date}{death date}
+#' \item{stroke.date}{stroke date}
+#' \item{lost.date}{end of followup date}
+#' }
+#'
+#' 
+#' @source
+#' The data are computer modified synthetic data
+#' @keywords datasets
+#' @examples
+#' data(ttedata)
+NULL
 
 
 ######################################################################

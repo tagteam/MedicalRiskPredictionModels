@@ -5,6 +5,29 @@ library(MedicalRiskPredictionModels)
 dataMRPM()
 #+END_SRC
 
+#+RESULTS:
+
+Prepared data for Medical Risk Prediction Models (Gerds & Kattan):
+
+THE DATA PROVIDED HERE ARE NOT THE REAL DATA BUT COMPUTER MODIFIED CLONES
+
+In vitro fertilization study
+   training data: ivftrain
+ validation data: ivftest
+
+Oral cancer study
+   training data: octrain
+ validation data: octest
+
+Active surveillance prostate cancer study
+  training data: astrain
+validation data: astest
+
+PSA measurements
+ longitudinal data: long
+
+Example time to event data: d
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  :eval never
 # Chunk1
@@ -26,6 +49,11 @@ ivftest[,risk.null:=predictRisk(nullmodel,newdata=ivftest)]
 ivftest[1:5,.(cyclelen,bmi,age,smoking,ant.foll,risk.null)]
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> eb82e6b400b840edcc1bb4f78f8e72703f642a61]:
+Error in is.data.frame(data) : object 'ivftrain' not found
+Error: object 'ivftest' not found
+Error: object 'ivftest' not found
+
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk3
@@ -38,6 +66,13 @@ octest[,km.risk10:=predictRisk(km,newdata=octest,times=120)]
 # Predicted risks do not depend on predictor variables
 octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)]
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 547e34dd1845e2010ccda9e0b145cf8781d1d8a8]:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'octrain' not found
+Error: object 'octest' not found
+Error: object 'octest' not found
+Error: object 'octest' not found
 
 # Chunk: 4-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
@@ -52,12 +87,24 @@ astest[,aj.deathrisk3:=predictRisk(aj,newdata=astest,times=3,cause="death")]
 astest[1:5,.(age5,psa,ct1,diaggs,aj.progrisk3,aj.deathrisk3)]
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 123276777b862c8833e1e030e339b239eb2f80ad]:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'astrain' not found
+Error: object 'astest' not found
+Error: object 'astest' not found
+Error: object 'astest' not found
+
 # Chunk: 5-------
 #+BEGIN_SRC R :exports code :eval (never-plain-export) :results output   :session *R* :cache yes 
 # Chunk5
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
 publish(fit,intercept=1)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 96a70d11494ffe5b8494c38aeddbfe16e69ce573]:
+: Error in is.data.frame(data) : object 'ivftrain' not found
+: Error in as.vector(x, "character") : 
+:   cannot coerce type 'closure' to vector of type 'character'
 
 # Chunk: 6-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
@@ -69,6 +116,13 @@ nd[,risk.ohss:=predictRisk(fit,newdata=nd)]
 nd
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 8e7b301f9e7a13ca10100bcc235ff60e14d4b40f]:
+Error in is.data.frame(data) : object 'ivftrain' not found
+Error: No method available for evaluating predicted probabilities from objects in class: standardGeneric. But, you can write it yourself or ask the package manager.
+   smoking
+1:      No
+2:     Yes
+
 # Chunk: 7-------
 #+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk7
@@ -76,6 +130,12 @@ fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
 publish(fit)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 7c493e5988401f0934625e6c74bcd15df4328cd9]:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error in as.vector(x, "character") : 
+  cannot coerce type 'closure' to vector of type 'character'
 
 # Chunk: 8-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
@@ -87,12 +147,29 @@ nd[,risk.10years:=predictRisk(fit,times=120,newdata=nd)]
 nd
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 654981b4dba82087f5f3a9d8996a84d5d13e9dce]:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error: No method available for evaluating predicted probabilities from objects in class: standardGeneric. But, you can write it yourself or ask the package manager.
+      grade gender
+1:     Well   Male
+2: Moderate   Male
+3:     Poor   Male
+4:     Well Female
+5: Moderate Female
+6:     Poor Female
+
 # Chunk: 9-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk9
 fit <- CSC(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain)
 publish(fit,diaggs="Gleason score",ct1="Clinical stage")
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 863becf38323ae63219f148cc30641ff48a7ddca]:
+Error in eval(Rform[[2]], envir = data) : object 'astrain' not found
+Error in as.vector(x, "character") : 
+  cannot coerce type 'closure' to vector of type 'character'
 
 # Chunk: 10-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes 
@@ -102,6 +179,14 @@ fit <- FGR(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain,
 publish(fit)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 703574ac409a39454bfde7756620b1c01a022a14]:
+:results:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'astrain' not found
+Error in as.vector(x, "character") : 
+  cannot coerce type 'closure' to vector of type 'character'
+:end:
+
 # Chunk: 11-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk11
@@ -109,12 +194,20 @@ ivftrain[,age5:=age/5] # odds ratio per 5 year increase of age
 fit <- glm(ohss~age5,data=ivftrain,family="binomial")
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 78c33e421c363bb0c96be854bebc6e0bbbf7165a]:
+Error: object 'ivftrain' not found
+Error in is.data.frame(data) : object 'ivftrain' not found
+
 # Chunk: 12-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk12
 library(rms)
 fit <- lrm(ohss~rcs(age),data=ivftrain)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 50d0b0ad26889010b87d6232fe72ac38fed7c4cf]:
+Error in terms.formula(formula, specials = "strat", data = data) : 
+  object 'ivftrain' not found
 
 # Chunk: 13-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
@@ -140,6 +233,32 @@ nd[,"10-year risk cubic spline":=100*R3]
 publish(nd,digits=1)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 7d0efb4cf6dc711ecfb87104c9493b4d5bf6d089]:
+Error in is.data.frame(data) : object 'octrain' not found
+Error in is.data.frame(data) : object 'octrain' not found
+Error in is.data.frame(data) : object 'octrain' not found
+Error in predictRisk(fit1, newdata = nd, times = 120) : 
+  object 'fit1' not found
+Error in predictRisk(fit2, newdata = nd, times = 120) : 
+  object 'fit2' not found
+Error in predictRisk(fit3, newdata = nd, times = 120) : 
+  object 'fit3' not found
+Error in eval(jsub, SDenv, parent.frame()) : object 'R1' not found
+Error in eval(jsub, SDenv, parent.frame()) : object 'R2' not found
+Error in eval(jsub, SDenv, parent.frame()) : object 'R3' not found
+ tumorthickness 
+            0.1 
+            0.5 
+            0.8 
+            1.0 
+            2.0 
+            3.0 
+            4.0 
+            5.0 
+            6.0 
+            7.0 
+            8.0
+
 # Chunk: 14-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk14
@@ -155,6 +274,16 @@ R2 <- 100*predictRisk(fit2,newdata=nd,cause="progression",times=3)
 cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 45e47e53a6d0949bb8fc14fab2dbf1e9463f6296]:
+Error in eval(Rform[[2]], envir = data) : object 'astrain' not found
+Error in eval(Rform[[2]], envir = data) : object 'astrain' not found
+Error in predictRisk(fit1, newdata = nd, cause = "progression", times = 3) : 
+  object 'fit1' not found
+Error in predictRisk(fit2, newdata = nd, cause = "progression", times = 3) : 
+  object 'fit2' not found
+Error in cbind(nd, `No interaction term` = R1, `With interaction term` = R2) : 
+  object 'R1' not found
+
 # Chunk: 15-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 # Chunk15
@@ -168,6 +297,16 @@ R1 <- 100*predictRisk(fit1,newdata=nd)
 R2 <- 100*predictRisk(fit2,newdata=nd)
 cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 695f1c0e04ab432d72683c2cfc2fe42acb5f6dd0]:
+:results:
+Error in is.data.frame(data) : object 'ivftrain' not found
+Error in is.data.frame(data) : object 'ivftrain' not found
+Error in predictRisk(fit1, newdata = nd) : object 'fit1' not found
+Error in predictRisk(fit2, newdata = nd) : object 'fit2' not found
+Error in cbind(nd, `Without interaction term` = R1, `With interaction term` = R2) : 
+  object 'R1' not found
+:end:
 
 # Chunk: 16-------
 #+BEGIN_SRC R :exports code :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
@@ -188,12 +327,31 @@ R3=100*predictRisk(fit3,nd)
 cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> e3e2593de6f6bb529e82049e2f6993e09347f27a]:
+:results:
+Error in terms.formula(formula, specials = "strat", data = data) : 
+  object 'ivftrain' not found
+Error in terms.formula(formula, specials = "strat", data = data) : 
+  object 'ivftrain' not found
+Error in terms.formula(formula, specials = "strat", data = data) : 
+  object 'ivftrain' not found
+Error in predictRisk(fit1, nd) : object 'fit1' not found
+Error in predictRisk(fit2, nd) : object 'fit2' not found
+Error in predictRisk(fit3, nd) : object 'fit3' not found
+Error in cbind(nd, `no penalty` = R1, `penalty 5` = R2, `penalty 10` = R3) : 
+  object 'R1' not found
+:end:
+
 # Chunk: 17-------
 #+BEGIN_SRC R  :results output   :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk17
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
             ,data=octrain,y=1,x=1)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> 3579a906e8ccacde43bba64a61d3ee6bcbbc0327]:
+: Error in terms.formula(formula, specials = ss, data = data) : 
+:   object 'octrain' not found
 
 # Chunk: 18-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
@@ -202,6 +360,12 @@ tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,dat
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
 tab1
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:33> e734ed45fd77fc37748e38a34ef0349eaa1c90e5]:
+:results:
+Error in is.data.frame(data) : object 'octrain' not found
+Error: object 'tab1' not found
+:end:
 
 # Chunk: 19-------
 #+BEGIN_SRC R  :results output   :exports code  :eval (never-plain-export) :session *R* :cache yes 
@@ -213,6 +377,13 @@ tab1 <- summary(utable(set~Q(age)+cyclelen+Q(bmi)+fsh+ant.foll+smoking,data=ivf)
 tab1
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:33> 906a07eb8243522debb7d137a2f05f9372c10b17]:
+: Error in factor(train, levels = c(TRUE, FALSE), labels = c("Training",  : 
+:   object 'train' not found
+: Error in as.data.frame.default(x[[i]], optional = TRUE) : 
+:   cannot coerce class ‘"function"’ to a data.frame
+: Error: object 'tab1' not found
+
 # Chunk: 20-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk20
@@ -220,12 +391,36 @@ tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followu
 tab2
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> 88d9e2dff2e304c14c0bf146c882a6e3ac7d06d5]:
+:results:
+    Variable     Level  1 (n=102)   2 (n=50) unknown (n=45)
+1        age mean (sd) 65.3 (3.4) 65.5 (4.5)     65.4 (3.2)
+2        ct1       cT1  87 (85.3)  47 (94.0)      43 (95.6)
+3                  cT2  15 (14.7)    3 (6.0)        2 (4.4)
+4 erg.status  Negative  39 (38.2)  34 (68.0)      34 (75.6)
+5             Positive  63 (61.8)  16 (32.0)      11 (24.4)
+  Event-free (n=20) Total (n=217)
+1        63.8 (3.6)    65.2 (3.7)
+2        20 (100.0)    197 (90.8)
+3           0 (0.0)      20 (9.2)
+4         14 (70.0)    121 (55.8)
+5          6 (30.0)     96 (44.2)
+:end:
+
 # Chunk: 21-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk21
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
 publish(fit,probindex=TRUE)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:34> ba4ba2b65877bedf3cd96f545a1792fd622f498c]:
+:results:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error in as.vector(x, "character") : 
+  cannot coerce type 'closure' to vector of type 'character'
+:end:
 
 # Chunk: 22-------
 #+BEGIN_SRC R  :results output raw drawer  :exports both  :eval (never-plain-export) :session *R* :cache yes 
@@ -235,6 +430,14 @@ fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
 publish(fit)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> 680a6ca841b5b1630fbe430b61bce3f88b0919b7]:
+:results:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'astrain' not found
+Error in as.vector(x, "character") : 
+  cannot coerce type 'closure' to vector of type 'character'
+:end:
+
 # Chunk: 23-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk23 
@@ -242,6 +445,10 @@ fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
               funlabel=paste0("Risk of OHSS")))
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:34> 17e2e9102331bba54a6305a8e398898c4dcb139c]:
+Error in value.chk(at, i, NA, -nint, Limval, type.range = "full") : 
+  variable age does not have limits defined by datadist
 
 # Chunk: 24-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
@@ -259,6 +466,15 @@ nom <- nomogram(fit, fun=list(function(x) 1-surv(60, x),
 plot(nom, xfrac=.5)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> 655ef809f6d1f85e33bcfae8f5a3c4cd81aeb858]:
+Error in datadist(octrain) : object 'octrain' not found
+Error in is.data.frame(data) : object 'octrain' not found
+Error in UseMethod("Survival") : 
+  no applicable method for 'Survival' applied to an object of class "c('lrm', 'rms', 'glm')"
+Error in value.chk(at, i, NA, -nint, Limval, type.range = "full") : 
+  variable age does not have limits defined by datadist
+Error in plot(nom, xfrac = 0.5) : object 'nom' not found
+
 # Chunk: 25-------
 #+BEGIN_SRC R  :results output raw drawer  :exports both  :eval (never-plain-export) :session *R* :cache yes 
 nm.bin <- glm(ohss~1,data=ivftrain,family="binomial")
@@ -270,11 +486,29 @@ ivftest[,addmargins(table(ohss))]
 ivftest[,list("risk"=sprintf("%1.1f",100*prop.table(table(ohss))[2]))]
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> 618bbac84718bf253562e40297207892abd3488b]:
+:results:
+Error in is.data.frame(data) : object 'ivftrain' not found
+Training data set:
+Error: object 'ivftrain' not found
+Error: object 'ivftrain' not found
+Validation data set:
+Error: object 'ivftest' not found
+Error: object 'ivftest' not found
+:end:
+
 # Chunk: 26-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model11 <- glm(ohss~smoking,data=ivftrain,family="binomial")
 publish(Model11,intercept=1,org=TRUE,digits=3)
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:34> 0fa9298e2f2fa6753800a0ad0712050eb0ceecc8]:
+:results:
+Error in is.data.frame(data) : object 'ivftrain' not found
+Error in publish(Model11, intercept = 1, org = TRUE, digits = 3) : 
+  object 'Model11' not found
+:end:
 
 # Chunk: 27-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
@@ -283,11 +517,24 @@ new.bin <- data.frame(smoking=factor(c("Yes","No")))
 cat(sprintf("%1.1f",100*predictRisk(Model11,newdata=new.bin)),"\n")
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> ec61435b8245e785b381b183af9188689113d0aa]:
+: Error in is.data.frame(data) : object 'ivftrain' not found
+: Error in predictRisk(Model11, newdata = new.bin) : 
+:   object 'Model11' not found
+
 # Chunk: 28-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes 
 km <- prodlim(Hist(survtime,survstatus)~1,data=octrain)
 cat(sprintf("%1.1f",100*predictRisk(km,times=120,newdata=data.frame(age=c(28,74),tumorthickness=c(0.3,0.1)))),"\n")
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:34> 9d14beccaa4ca55477248e63b658967b1a24c341]:
+:results:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'octrain' not found
+Error in predictRisk(km, times = 120, newdata = data.frame(age = c(28,  : 
+  object 'km' not found
+:end:
 
 # Chunk: 29-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
@@ -295,12 +542,27 @@ Model21 <- coxph(Surv(survtime, survstatus)~grade+gender,data=octrain,x=TRUE)
 publish(Model21,org=TRUE)
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:34> f644097bfea16fe668de6f5774344ad4e95802bc]:
+:results:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error in publish(Model21, org = TRUE) : object 'Model21' not found
+:end:
+
 # Chunk: 30-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 Model21 <- coxph(Surv(survtime, survstatus)~grade+gender,data=octrain,x=TRUE)
 new.surv <- expand.grid(grade=c("Well","Moderate","Poor"),gender=c("Male","Female"))
 org(cbind(new.surv,"10-year risk"=sprintf("%1.1f",100*predictRisk(Model21,newdata=new.surv,times=120))))
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:35> 9d7bce990ec62ed75634844def7731acdfb9b583]:
+:results:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error in predictRisk(Model21, newdata = new.surv, times = 120) : 
+  object 'Model21' not found
+:end:
 
 # Chunk: 31-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
@@ -310,6 +572,16 @@ cat("\n")
 nd=data.frame(tumorthickness=c(0.1,0.5,1,2,4))
 org(cbind(nd,"10-year risk"=sprintf("%1.1f",100*predictRisk(Model22,newdata=nd,times=120))))
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:35> c12f604d51e91753d5aab7ed1f85e2e511b10ec3]:
+:results:
+Error in terms.formula(formula, specials = ss, data = data) : 
+  object 'octrain' not found
+Error in publish(x, ..., org = TRUE) : object 'Model22' not found
+
+Error in predictRisk(Model22, newdata = nd, times = 120) : 
+  object 'Model22' not found
+:end:
 
 # Chunk: 32-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes :eval never
@@ -343,6 +615,12 @@ nm.cr <- prodlim(Hist(asprogtime,asprog)~1,data=astrain)
 cat(sprintf("%1.1f",100*predictRisk(nm.cr,times=3,cause="progression",newdata=data.frame(age=c(28,74),psa=c(-1.3,-5.8)))),"\n")
 #+END_SRC
 
+#+RESULTS[<2020-06-13 12:15:35> 42295f445dd15a81fbf54cba11468a3929f248bc]:
+Error in terms.formula(x = formula, specials = specials, data = data) : 
+  object 'astrain' not found
+Error in predictRisk(nm.cr, times = 3, cause = "progression", newdata = data.frame(age = c(28,  : 
+  object 'nm.cr' not found
+
 # Chunk: 35-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer :session *R* :cache yes 
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
@@ -351,4 +629,12 @@ nd=expand.grid(diaggs=c("GNA","3 and 3","3 and 4"),ct1=c("cT1","cT2"),psa=c(-3,-
 org(cbind(nd,"No interaction term"=sprintf("%1.1f",predictRisk(fit1,newdata=nd,cause="progression",times=3)),
       "With interaction term"=sprintf("%1.1f",predictRisk(fit2,newdata=nd,cause="progression",times=3))))
 #+END_SRC
+
+#+RESULTS[<2020-06-13 12:15:35> cb3ea7ff325698d08bd4e455f97196cfefda4865]:
+:results:
+Error in eval(Rform[[2]], envir = data) : object 'astrain' not found
+Error in eval(Rform[[2]], envir = data) : object 'astrain' not found
+Error in predictRisk(fit1, newdata = nd, cause = "progression", times = 3) : 
+  object 'fit1' not found
+:end:
 

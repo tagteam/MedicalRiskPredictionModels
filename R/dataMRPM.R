@@ -1,7 +1,7 @@
 ## Version: 
-## Last-Updated: Jun 13 2020 (12:10) 
+## Last-Updated: Jun 13 2020 (12:32) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 117
+##     Update #: 124
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -108,25 +108,35 @@ dataMRPM <- function(){
     setDT(long)
     long$psadate <- as.Date(long$psadate,format="%Y-%m-%d")
     psadt <- function(psa.time,psa.val){(log(2)/coef(lm(log(psa.val)~psa.time))[2])/365.25}
-    setkey(long,subject,psadate)
-    # long[,psa.doublingstime:=psadt(psa.time=psadate,psa.val=psa),by=subject]
+    ## setkey(long,subject,psadate)
+    ## long[,psa.doublingstime:=psadt(psa.time=psadate,psa.val=psa),by=subject]
     # --------------------------------------------------------------------------------------------------
     ## example time to event data
     # --------------------------------------------------------------------------------------------------
-    d <- data.frame(id=c(1:5),
-                    af.date=c("2001-04-25","1995-02-16","2001-09-09","1999-12-20","1997-05-27"),
-                    death.date=c(NA,"2011-10-27",NA,"2009-01-02",NA),
-                    stroke.date=c("2005-11-16",NA,NA,"2007-09-01","1999-12-18"),
-                    lost.date=c(NA,NA,NA,NA,"2008-08-17"))
+    data(ttedata)
+    d <- ttedata
     setDT(d)
+    ## d <- data.frame(id=c(1:5),
+                     ## af.date=c("2001-04-25","1995-02-16","2001-09-09","1999-12-20","1997-05-27"),
+                     ## death.date=c(NA,"2011-10-27",NA,"2009-01-02",NA),
+                     ## stroke.date=c("2005-11-16",NA,NA,"2007-09-01","1999-12-18"),
+                     ## lost.date=c(NA,NA,NA,NA,"2008-08-17"))
+    ## setDT(d)
     # --------------------------------------------------------------------------------------------------
     # output message
     # --------------------------------------------------------------------------------------------------
-    assign("ivf",ivf, pos=-1)
-    assign("oc",oc, pos=-1)
-    assign("as",as, pos=-1)
-    assign("long",long, pos=-1)
-    assign("d",d, pos=-1)
+    assign("psadt",psadt, pos=.GlobalEnv)
+    assign("ivf",ivf, pos=.GlobalEnv)
+    assign("ivftrain",ivftrain, pos=.GlobalEnv)
+    assign("ivftest",ivftest, pos=.GlobalEnv)
+    assign("oc",oc, pos=.GlobalEnv)
+    assign("octrain",octrain, pos=.GlobalEnv)
+    assign("octest",octest, pos=.GlobalEnv)
+    assign("as",as, pos=.GlobalEnv)
+    assign("astrain",astrain, pos=.GlobalEnv)
+    assign("astest",astrain, pos=.GlobalEnv)
+    assign("long",long, pos=.GlobalEnv)
+    assign("d",d, pos=.GlobalEnv)
     message("\nPrepared data for Medical Risk Prediction Models (Gerds & Kattan):
 
 THE DATA PROVIDED HERE ARE NOT THE REAL DATA BUT COMPUTER MODIFIED CLONES
