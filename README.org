@@ -1,0 +1,5 @@
+* Online material for Medical Risk Prediction Models (Gerds & Kattan) 
+
+This repository provides computer modified data and R-codes for all
+chapters. To conveniently run the codes on your computer, clone or
+download all files. 
