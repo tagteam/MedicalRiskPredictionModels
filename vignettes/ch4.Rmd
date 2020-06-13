@@ -204,6 +204,8 @@ publish(fit)
 
 ```{r   }
 # Chunk23 
+uu <- datadist(ivf)
+options(datadist="uu")
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
               funlabel=paste0("Risk of OHSS"))) 
