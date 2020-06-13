@@ -1,6 +1,11 @@
+
+#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
+source("data-preparation.R")
+#+END_SRC
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw drawer :exports code  :session *R* :cache yes 
-# R-code
+# Chunk1
 library(Publish)
 library(data.table)
 data(Diabetes)
@@ -10,7 +15,7 @@ Diabetes[1:5,.(weight,height)]
 
 # Chunk: 2-------
 #+BEGIN_SRC R :exports code :results output raw drawer  :session *R* :cache yes 
-# R-code
+# Chunk2
 library(data.table)
 Diabetes[,height.m:= height*0.0254]
 Diabetes[,weight.kg:= weight* 0.4535929]
@@ -21,7 +26,7 @@ Diabetes[,.(bmi,BMI,weight,height)]
 
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
-# R-code
+# Chunk3
 library(data.table)
 long <- long[,list("psa.time"=psadate-psadate[1],psadate,psa),by=subject]
 long <- long[psa.time<=(2*365.25),]
@@ -35,7 +40,7 @@ long[,list("psa.doublingtime"=psadt(psa.time,psa)),by=subject]
 
 # Chunk: 4-------
 #+BEGIN_SRC R :exports code :results output raw drawer :session *R* :cache yes :float
-# R-code (no competing risks)
+# Chunk4 (no competing risks)
 library(data.table)
 d[,af.date:=as.Date(af.date)]
 d[,death.date:=as.Date(death.date)]
@@ -54,7 +59,7 @@ d
 
 # Chunk: 5-------
 #+BEGIN_SRC R :exports code :results output raw drawer :session *R* :cache yes 
-# R-code (with competing risks)
+# Chunk5 (with competing risks)
 library(data.table)
 d[,af.date:=as.Date(af.date)]
 d[,stroke.date:=as.Date(stroke.date)]
@@ -76,7 +81,7 @@ d
 
 # Chunk: 6-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes  :eval never
-# R-code
+# Chunk6
 library(data.table)
 d[,time.5:=pmin(time,5*365.25)]
 d[,event.5:=event]

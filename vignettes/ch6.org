@@ -1,6 +1,11 @@
+
+#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
+source("data-preparation.R")
+#+END_SRC
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk1
 # conventional model
 fit1 <- lrm(ohss~ant.foll+cyclelen+smoking+age,data=ivftrain)
 # experimental model
@@ -17,31 +22,31 @@ plotRisk(x,
 
 # Chunk: 2-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk2
 summary(x,what="score")
 #+END_SRC
 
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk3
 summary(x,what="contrasts")
 #+END_SRC
 
 # Chunk: 4-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk4
 plotCalibration(x,auc.in.legend=1,brier.in.legend=1)
 #+END_SRC
 
 # Chunk: 5-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk5
 plotROC(x)
 #+END_SRC
 
 # Chunk: 6-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk6
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+rcs(tumorthickness,3)+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,data=octrain.cc,x=TRUE,surv=TRUE)
 surv <- Survival(fit1)
 plot(nomogram(fit1,fun=list(function(x) 1-surv(60, x),
@@ -51,14 +56,14 @@ plot(nomogram(fit1,fun=list(function(x) 1-surv(60, x),
 
 # Chunk: 7-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk7
 set.seed(1972)
 fit2 <- rfsrc(Surv(survtime,survstatus)~ age+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,data=octrain.cc)
 #+END_SRC
 
 # Chunk: 8-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk8
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
             data=octrain.cc, x=TRUE, y=TRUE, surv=TRUE)
 set.seed(1972)
@@ -74,12 +79,13 @@ summary(x,what="score")[[1]]
 
 # Chunk: 9-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk9
 summary(x,what="contrasts")
 #+END_SRC
 
 # Chunk: 10-------
 #+BEGIN_SRC R  :results output :exports both  :session *R* :cache yes  
+# Chunk10
 library(bootstrap)
 set.seed(8)
 # time of death or censored in the complete cases
@@ -94,7 +100,7 @@ min(boot.max$thetastar)/12
 
 # Chunk: 11-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk11
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=octest.cc,
            formula=Surv(survtime,survstatus)~1,
@@ -108,7 +114,7 @@ plotBrier(x,
 
 # Chunk: 12-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk12
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=octest.cc,
            formula=Surv(survtime,survstatus)~1,
@@ -122,21 +128,21 @@ plotAUC(x, legend.x="bottomleft",
 
 # Chunk: 13-------
 #+BEGIN_SRC R  :results output drawer raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk13
 fit1 <- FGR(Hist(asprogtime,asprog)~age+psa+ct1+diaggs+ppb5,data=astrain,cause="progression")
 fit1
 #+END_SRC
 
 # Chunk: 14-------
 #+BEGIN_SRC R  :results output drawer raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk14
 fit2 <- CSC(list(Hist(asprogtime,asprog)~age+psa+ct1+diaggs+ppb5,Hist(asprogtime,asprog)~age),data=astrain,cause="progression")
 fit2
 #+END_SRC
 
 # Chunk: 15-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk15
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=astest,
            formula=Hist(asprogtime,asprog)~1,
@@ -151,7 +157,7 @@ plotRisk(x,
 
 # Chunk: 16-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk16
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=astest,
            formula=Hist(asprogtime,asprog)~1,
@@ -162,12 +168,13 @@ summary(x,what="score")
 
 # Chunk: 17-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+# Chunk17
 summary(x,what="contrasts")
 #+END_SRC
 
 # Chunk: 18-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk18
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=astest, formula=Hist(asprogtime,asprog)~1,
            cause="progression", times=seq(.5,5,.5))
@@ -176,7 +183,7 @@ plotBrier(x)
 
 # Chunk: 19-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk19
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            data=astest, formula=Hist(asprogtime,asprog)~1,
            cause="progression", times=seq(.5,5,.5))
@@ -185,7 +192,7 @@ plotAUC(x)
 
 # Chunk: 20-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk20
 set.seed(1972)
 fit1 <- rfsrc(Surv(survtime,survstatus)~ age+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,data=octrain.cc)
 set.seed(1972)
@@ -201,16 +208,11 @@ mtext("Predicted risk of 5-year mortality",line=2)
 
 # Chunk: 21-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
-# R-code
+# Chunk21
 fit1 <- CSC(list(Hist(asprogtime,asprog)~age+psa+ct1+diaggs+ppb5,Hist(asprogtime,asprog)~age),data=astrain,cause="progression")
 fit2 <- CSC(list(Hist(asprogtime,asprog)~age+psa+ct1+diaggs+ppb5+erg.status,Hist(asprogtime,asprog)~age+erg.status),data=astrain,cause="progression")
 x <- Score(list("Conventional"=fit1,"New marker"=fit2),formula=Hist(asprogtime,asprog)~1,cause="progression",data=astest,times=3,summary="risks")
 plotRisk(x,times=3,xlim=c(0,1),ylim=c(0,1),preclipse.shade=1,legend.ncol=3,legend.x=0,legend.y=1,legend.xpd=NA)
 mtext("Risk of progression within 3-years",side=3,line=2.3)
-#+END_SRC
-
-# Chunk: 22-------
-#+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes  
-x.new$AUC$score
 #+END_SRC
 

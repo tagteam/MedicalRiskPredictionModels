@@ -1,5 +1,11 @@
+
+#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
+source("data-preparation.R")
+#+END_SRC
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+# Chunk1
 B <- 200
 ivftrain.small <- ivftrain[sample(1:NROW(ivftrain),size=50)]
 result <- foreach(s=1:B,.combine="rbind")%dopar%{
@@ -28,7 +34,7 @@ abline(h=0,col=2)
 
 # Chunk: 2-------
 #+BEGIN_SRC R  :results output :exports both  :session *R* :cache yes  
-# R-code
+# Chunk2
 library(PredictABEL) # provides the re-classification table
 OHSSprevalence <- mean(ivftrain$OHSS=="Yes")
 # conventional model
@@ -54,7 +60,7 @@ reclassification(data=ivftest,
 
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output :exports both  :session *R* :cache yes  
-# R-code
+# Chunk3
 x <- Score(list("Conventional model"=p1,"Exaggerated model"=p2),
            data=ivftest,
            se.fit=0,

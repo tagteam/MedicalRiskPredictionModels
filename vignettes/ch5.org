@@ -1,6 +1,11 @@
+
+#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
+source("data-preparation.R")
+#+END_SRC
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk1
 fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
 x <- Score(list(fit),formula=ohss~1,data=ivftest,summary="riskQuantiles")
 boxplot(x)
@@ -10,21 +15,21 @@ abline(v=mean(predictRisk(fit,newdata=ivftest)),lty=3)
 
 # Chunk: 2-------
 #+BEGIN_SRC R  :results output  :exports both  :session *R* :cache yes
-# R-code
+# Chunk2
 fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
 Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="brier",summary="ipa")
 #+END_SRC
 
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output  :exports both  :session *R* :cache yes
-# R-code
+# Chunk3
 fit <- glm(ohss~ant.foll+cyclelen+age+smoking,data=ivftrain,family="binomial")
 Score(list("My model"=fit),formula=ohss~1,data=ivftest,metrics="auc")
 #+END_SRC
 
 # Chunk: 4-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk4
 fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
 x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
 	   plots="ROC")
@@ -33,7 +38,7 @@ plotROC(x)
 
 # Chunk: 5-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk5
 fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
 x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
 	    plots="calibration")
@@ -42,19 +47,19 @@ plotCalibration(x,bars=1,rug=1,q=10)
 
 # Chunk: 6-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk6
 plotCalibration(x,bars=1,q=3)
 #+END_SRC
 
 # Chunk: 7-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk7
 plotCalibration(x)
 #+END_SRC
 
 # Chunk: 8-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk8
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
 x <- Score(list("My-model"=fit),
 	   formula=Surv(survtime,survstatus)~1, data=octest,
@@ -64,7 +69,7 @@ boxplot(x,event.labels=c("Overall","Dead","Alive"),outcome.label="10-year\nmorta
 
 # Chunk: 9-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk9
 # Kaplan-Meier:
 F <- prodlim(Hist(survtime,survstatus)~1,data=octest)
 plot(F)
@@ -75,7 +80,7 @@ plot(G)
 
 # Chunk: 10-------
 #+BEGIN_SRC R :exports both :results output :session *R* :cache yes
-# R-code
+# Chunk10
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
 x <- Score(list("Cox"=fit),
 	   data=octest,
@@ -87,7 +92,7 @@ x
 
 # Chunk: 11-------
 #+BEGIN_SRC R :exports both :results output :session *R* :cache yes
-# R-code
+# Chunk11
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1)
 x <- Score(list("Cox regression"=fit),
 	   data=octest,
@@ -99,7 +104,7 @@ x
 
 # Chunk: 12-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk12
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
 x <- Score(list("Cox"=fit),data=octest,
 	   formula=Surv(survtime,survstatus)~1,
@@ -109,7 +114,7 @@ plotROC(x, plot.main="Outcome: 10 year all-cause mortality",auc=1)
 
 # Chunk: 13-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk13
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1L)
 x <- Score(list("Cox"=fit), data=octest,
 	   formula=Surv(survtime,survstatus)~1,
@@ -120,7 +125,7 @@ a <- plotCalibration(x, pseudo=0, rug=1, cens.method="local",
 
 # Chunk: 14-------
 #+BEGIN_SRC R :exports code :results output :session *R* :cache yes
-# R-code
+# Chunk14
 fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
 		Hist(asprogtime,asprog)~age),
 	   data=astrain,cause="progression")
@@ -134,7 +139,7 @@ Score(list("CSC"=fit),
 
 # Chunk: 15-------
 #+BEGIN_SRC R :exports both :results output :session *R* :cache yes
-# R-code
+# Chunk15
 fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
 		Hist(asprogtime,asprog)~age),
 	   data=astrain,cause="progression")
@@ -143,13 +148,13 @@ Score(list("CSC"=fit),data=astest,formula=Hist(asprogtime,asprog)~1,times=3,metr
 
 # Chunk: 16-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk16
 plotROC(x,plot.main="Outcome: 3 year cancer progression")
 #+END_SRC
 
 # Chunk: 17-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk17
 fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
 		Hist(asprogtime,asprog)~age),
 	   data=astrain,cause="progression")
@@ -161,7 +166,7 @@ plotCalibration(x,cens.method="local")
 
 # Chunk: 18-------
 #+BEGIN_SRC R  :results output   :exports both  :session *R* :cache yes
-# R-code
+# Chunk18
 fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
                 Hist(asprogtime,asprog)~age),
            data=astrain,cause="progression")
@@ -173,7 +178,7 @@ x
 
 # Chunk: 19-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes
-# R-code
+# Chunk19
 fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,
 	     data=octrain, x=1L)
 x <- Score(list("Cox"=fit),

@@ -1,6 +1,11 @@
+
+#+BEGIN_SRC R :results output raw  :exports code  :session *R* :cache yes
+source("data-preparation.R")
+#+END_SRC
+
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes  :eval never
-# R-code
+# Chunk1
 library(data.table)
 oc[,survtime.5years:=pmin(survtime,60)] # stop time after 5 years
 oc[,survstatus.5years:=survstatus] # take a copy 
@@ -10,7 +15,7 @@ oc[,.(survtime,survstatus,survtime.5years,survstatus.5years)]
 
 # Chunk: 2-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk2
 # logistic regression in learn data
 nullmodel <- glm(ohss~1,data=ivftrain,family="binomial") 
 # predicted risk in test data
@@ -21,7 +26,7 @@ ivftest[1:5,.(cyclelen,bmi,age,smoking,ant.foll,risk.null)]
 
 # Chunk: 3-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk3
 library(riskRegression)
 # Kaplan-Meier estimate in training set
 km <- prodlim(Hist(survtime,survstatus)~1,data=octrain)
@@ -34,7 +39,7 @@ octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)]
 
 # Chunk: 4-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk4
 library(riskRegression)
 # Aalen-Johansen estimate in training set
 aj <- prodlim(Hist(asprogtime,asprog)~1,data=astrain)
@@ -47,14 +52,14 @@ astest[1:5,.(age5,psa,ct1,diaggs,aj.progrisk3,aj.deathrisk3)]
 
 # Chunk: 5-------
 #+BEGIN_SRC R :exports code :results output   :session *R* :cache yes 
-# R-code
+# Chunk5
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
 publish(fit,intercept=1)
 #+END_SRC
 
 # Chunk: 6-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk6
 library(data.table)
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
 nd <- data.table(smoking=c("No","Yes"))
@@ -64,7 +69,7 @@ nd
 
 # Chunk: 7-------
 #+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes  
-# R-code
+# Chunk7
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
 publish(fit)
@@ -72,7 +77,7 @@ publish(fit)
 
 # Chunk: 8-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk8
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
 nd <- data.table(expand.grid(grade=c("Well","Moderate","Poor"),gender=c("Male","Female")))
@@ -82,14 +87,14 @@ nd
 
 # Chunk: 9-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk9
 fit <- CSC(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain)
 publish(fit,diaggs="Gleason score",ct1="Clinical stage")
 #+END_SRC
 
 # Chunk: 10-------
 #+BEGIN_SRC R :exports both :results output raw drawer  :session *R* :cache yes 
-# R-code
+# Chunk10
 fit <- FGR(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain,
            cause="progression")
 publish(fit)
@@ -97,21 +102,21 @@ publish(fit)
 
 # Chunk: 11-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk11
 ivftrain[,age5:=age/5] # odds ratio per 5 year increase of age
 fit <- glm(ohss~age5,data=ivftrain,family="binomial")
 #+END_SRC
 
 # Chunk: 12-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk12
 library(rms)
 fit <- lrm(ohss~rcs(age),data=ivftrain)
 #+END_SRC
 
 # Chunk: 13-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk13
 library(rms)
 # fit Cox regression models
 fit1=cph(Surv(survtime,survstatus)~tumorthickness,
@@ -135,7 +140,7 @@ publish(nd,digits=1)
 
 # Chunk: 14-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code
+# Chunk14
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
 # select 12 examples
@@ -150,7 +155,7 @@ cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
 
 # Chunk: 15-------
 #+BEGIN_SRC R :exports both :results output raw drawer   :session *R* :cache yes 
-# R-code
+# Chunk15
 fit1 <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family="binomial")
 fit2 <- glm(ohss~ant.foll*smoking+age,data=ivftrain,family="binomial")
 # select 6 examples
@@ -164,7 +169,7 @@ cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
 
 # Chunk: 16-------
 #+BEGIN_SRC R :exports code :results output raw drawer   :session *R* :cache yes 
-# R-code
+# Chunk16
 library(rms)
 fit1 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain)
 fit2 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain,penalty=5)
@@ -183,14 +188,14 @@ cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
 
 # Chunk: 17-------
 #+BEGIN_SRC R  :results output   :exports both  :session *R* :cache yes  
-# R-code
+# Chunk17
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
             ,data=octrain,y=1,x=1)
 #+END_SRC
 
 # Chunk: 18-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
-# R-code
+# Chunk18
 tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,data=octrain,
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
 tab1
@@ -198,7 +203,7 @@ tab1
 
 # Chunk: 19-------
 #+BEGIN_SRC R  :results output   :exports code  :session *R* :cache yes 
-# R-code
+# Chunk19
 ivf[,set:=factor(train,levels=c(TRUE,FALSE),
                  labels=c("Training","Validation"))]
 tab1 <- summary(utable(set~Q(age)+cyclelen+Q(bmi)+fsh+ant.foll+smoking,data=ivf),
@@ -208,21 +213,21 @@ tab1
 
 # Chunk: 20-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
-# R-code
+# Chunk20
 tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followup.time=5)
 tab2
 #+END_SRC
 
 # Chunk: 21-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :session *R* :cache yes 
-# R-code
+# Chunk21
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
 publish(fit,probindex=TRUE)
 #+END_SRC
 
 # Chunk: 22-------
 #+BEGIN_SRC R  :results output raw drawer  :exports both  :session *R* :cache yes 
-# R-code
+# Chunk22
 fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
            data=astrain, times=5, cause="progression")
 publish(fit)
@@ -230,7 +235,7 @@ publish(fit)
 
 # Chunk: 23-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code 
+# Chunk23 
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
               funlabel=paste0("Risk of OHSS")))
@@ -238,7 +243,7 @@ plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
 
 # Chunk: 24-------
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-# R-code 
+# Chunk24 
 u <- datadist(octrain)
 options(datadist="u")
 fit <- cph(Surv(survtime,survstatus)~age*grade+gender+rcs(tumorthickness),
