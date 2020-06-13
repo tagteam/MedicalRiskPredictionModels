@@ -1,5 +1,14 @@
 * Online material for Medical Risk Prediction Models (Gerds & Kattan) 
 
-This repository provides computer modified data and R-codes for all
-chapters. To conveniently run the codes on your computer, clone or
+This repository provides synthetic (computer modified) data and R-codes for all
+chapters. To conveniently run the codes on your computer, either install the package 
+via
+
+#+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+library(devtools)
+install_github("tagteam/medical-risk-prediction-models")
+
+#+END_SRC
+clone or
 download all files. 

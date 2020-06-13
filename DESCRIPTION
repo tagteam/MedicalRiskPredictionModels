@@ -1,9 +1,11 @@
 Package: medical-risk-prediction-models
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: R-codes for book: Medical Risk Prediction Models by Gerds & kattan
+Version: 2020.06.13
 Date: 2020-06-13
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Thomas Alexander Gerds
+Depends:
+    R (>= 3.5.0), riskRegresion (>= 2020.2.5)
+Maintainer: Thomas Alexander Gerds <tag@biostat.ku.dk>
+Description: The package provides synthetic computer modified data all the visible R-codes of the book  
+License: GPL (>= 2)
