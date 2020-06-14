@@ -26,24 +26,33 @@ fit
 #+END_SRC
 
 # Chunk: 4-------
-#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
+#+BEGIN_SRC R :results graphics :file "figures/figure-8.1.pdf" :exports code :eval (never-plain-export) :session *R* :cache yes 
 # Chunk4
-fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),data=ivftrain)
-coef(fit)
+library(FactoMineR)
+Vars <- ivftrain[,c("cyclelen","bmi","weight","age","ant.foll","fsh","ovolume")]
+fit <- PCA(Vars,scale.unit=TRUE,ncp=5,graph=FALSE)
+plot(fit,new.plot=FALSE,choix="var")
 #+END_SRC
 
 # Chunk: 5-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
 # Chunk5
-fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
-            data=ivftrain,
-            penalty=10)
+fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),data=ivftrain)
 coef(fit)
 #+END_SRC
 
 # Chunk: 6-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
 # Chunk6
+fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
+            data=ivftrain,
+            penalty=10)
+coef(fit)
+#+END_SRC
+
+# Chunk: 7-------
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
+# Chunk7
 fit1 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
             data=ivftrain,penalty=0)
 fit2 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
@@ -53,60 +62,60 @@ x <- Score(list(unpenalized=fit1,penalized=fit2),data=ivftest,formula=ohss~1)
 summary(x,what="score")
 #+END_SRC
 
-# Chunk: 7-------
+# Chunk: 8-------
 #+BEGIN_SRC R :exports both :eval (never-plain-export) :results output   :session *R* :cache yes 
-# Chunk7
+# Chunk8
 fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovolume,data=ivftrain,family="binomial")
 publish(fit)
-#+END_SRC
-
-# Chunk: 8-------
-#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk8
-library(penalized)
-form <- Surv(survtime,survstatus)~ age + tumorthickness + genderMale + tobaccoNever + deep.invasionYes + siteFloor.of.Mouth + siteHard.Palate + siteLower.Gum + siteRetromolar.Trigone + siteTongue + siteUpper.Gum + raceNonCauc + x.posnodes + tumormaxdimension + vascular.invasionYes
-# Elastic net
-fit.elnet <- penalized(form, data=octrain, model="cox",
-                       lambda1=1.5, lambda2=2.5) # L1 and L2 penalty 
-# LASSO
-fit.lasso <- penalized(form,data=octrain,model="cox",
-                       lambda1=4,lambda2=0) # no L2 penalty 
-# Ridge regression
-fit.ridge <- penalized(form,data=octrain,model="cox",
-                       lambda1=0,lambda2=3) # no L1 penalty 
 #+END_SRC
 
 # Chunk: 9-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk9
-# sequence of candidate penalty values 
-penalities <- c(0,0.01,...,1000)
-# sequence of fitted LASSO models
-fit.penal <- lapply(penalities,function(pen){
-  penalizedS3(form,data=octrain,model="cox",lambda2=0,lambda1=pen)
-})
-# cross-validated Brier score and AUC
-x.steps <- Score(fit.penal, 
-                 formula=Surv(survtime,survstatus)~1,
-                 seed=9, # random seed
-                 data=octrain, # training data
-                 times=60, # prediction time horizon
-                 split.method="cv5",# 5-fold cross-validation
-                 B=5) # repeated 5 times
+library(penalized)
+form <- Surv(survtime,survstatus)~ age + tumorthickness + genderMale + tobaccoNever + deep.invasionYes + siteFloor.of.Mouth + siteHard.Palate + siteLower.Gum + siteRetromolar.Trigone + siteTongue + siteUpper.Gum + raceNonCauc + x.posnodes + tumormaxdimension + vascular.invasionYes
+# Elastic net
+fit.elnet <- penalized(form, data=octrain.dummy, model="cox",
+                       lambda1=1.5, lambda2=2.5) # L1 and L2 penalty 
+# LASSO
+fit.lasso <- penalized(form,data=octrain.dummy,model="cox",
+                       lambda1=4,lambda2=0) # no L2 penalty 
+# Ridge regression
+fit.ridge <- penalized(form,data=octrain.dummy,model="cox",
+                       lambda1=0,lambda2=3) # no L1 penalty 
 #+END_SRC
 
 # Chunk: 10-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk10
+# sequence of candidate penalty values 
+penalities <- c(0,0.01,10,100,1000)
+# sequence of fitted LASSO models
+fit.penal <- lapply(penalities,function(pen){
+  penalizedS3(form,data=octrain.dummy,model="cox",lambda2=0,lambda1=pen)
+})
+# cross-validated Brier score and AUC
+x.steps <- Score(fit.penal, 
+                 formula=Surv(survtime,survstatus)~1,
+                 seed=9, # random seed
+                 data=octrain.dummy, # training data
+                 times=60, # prediction time horizon
+                 split.method="cv5",# 5-fold cross-validation
+                 B=5) # repeated 5 times
+#+END_SRC
+
+# Chunk: 11-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
+# Chunk11
 library(randomForest) # Liaw & Wiener
 fit.rf <- randomForest(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 library(randomForestSRC) # Ishwaran & Kogalur
 fit.rfsrc <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 #+END_SRC
 
-# Chunk: 11-------
+# Chunk: 12-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk11
+# Chunk12
 set.seed(98)
 fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 set.seed(98)
@@ -116,9 +125,9 @@ x <- Score(list("Ishwaran & Kogalur"=fit1,"Liaw & Wiener"=fit2),
 summary(x,what="score")
 #+END_SRC
 
-# Chunk: 12-------
+# Chunk: 13-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk12
+# Chunk13
 set.seed(98)
 fit3 <- ranger(OHSS~age+ant.foll,data=ivftrain,num.tree=1000,
                probability=1)
@@ -127,9 +136,9 @@ x <- Score(list("Wright & Ziegeler"=fit3),
 summary(x,what="score")
 #+END_SRC
 
-# Chunk: 13-------
+# Chunk: 14-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk13
+# Chunk14
 set.seed(98)
 fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000,nodesize=28)
 set.seed(98)
@@ -142,9 +151,9 @@ x <- Score(list("Ishwaran & Kogalur"=fit1,"Liaw & Wiener"=fit2,"Wright & Ziegele
 summary(x,what="score")
 #+END_SRC
 
-# Chunk: 14-------
+# Chunk: 15-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk14
+# Chunk15
 set.seed(1) # the model depends on the random seed
 nn <- neuralnet(ohss ~ age + ant.foll,
                 data=ivftrain,
@@ -152,9 +161,9 @@ nn <- neuralnet(ohss ~ age + ant.foll,
                 act.fct = "logistic") # outcome activation function
 #+END_SRC
 
-# Chunk: 15-------
+# Chunk: 16-------
 #+BEGIN_SRC R  :results output :exports both  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk15
+# Chunk16
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
             data=octrain.cc, x=TRUE, y=TRUE, surv=TRUE)
 set.seed(1972)
@@ -168,18 +177,18 @@ level1.data <- dcast(ID ~model,value.var="risk",data=x$risks$score)
 level1.data
 #+END_SRC
 
-# Chunk: 16-------
+# Chunk: 17-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk16
+# Chunk17
 library(SuperLearner)
 set.seed(17) # the result depends on the random seed
 fit <- SuperLearner(Y=ivftrain[["ohss"]],X=ivftrain[,c("age","ant.foll")],SL.library=c("SL.glm","SL.randomForest","SL.nnet"),family="binomial")
 fit$coef
 #+END_SRC
 
-# Chunk: 17-------
+# Chunk: 18-------
 #+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk17
+# Chunk18
 fit1 <- glm(OHSS~age+ant.foll,data=ivftrain,family="binomial")
 set.seed(2)
 fit2 <- randomForest(OHSS~age+ant.foll,data=ivftrain,ntree=1000,importance=0)
@@ -196,9 +205,9 @@ x <- Score(list("Logistic regression"=fit1,"Random Forest"=fit2,"Neural net"=fit
 summary(x,what="score")
 #+END_SRC
 
-# Chunk: 18-------
+# Chunk: 19-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
-# Chunk18
+# Chunk19
 p <- predict(fit,newdata=data.frame(age=25,ant.foll=17))
 p
 #+END_SRC

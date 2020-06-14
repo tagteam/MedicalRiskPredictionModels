@@ -1,7 +1,7 @@
 ## Version: 
-## Last-Updated: Jun 13 2020 (12:32) 
+## Last-Updated: Jun 14 2020 (09:47) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 124
+##     Update #: 126
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -132,6 +132,10 @@ dataMRPM <- function(){
     assign("oc",oc, pos=.GlobalEnv)
     assign("octrain",octrain, pos=.GlobalEnv)
     assign("octest",octest, pos=.GlobalEnv)
+    assign("octrain.cc",octrain.cc, pos=.GlobalEnv)
+    assign("octest.cc",octest.cc, pos=.GlobalEnv)
+    assign("octrain.dummy",octrain.dummy, pos=.GlobalEnv)
+    assign("octest.dummy",octest.dummy, pos=.GlobalEnv)
     assign("as",as, pos=.GlobalEnv)
     assign("astrain",astrain, pos=.GlobalEnv)
     assign("astest",astrain, pos=.GlobalEnv)

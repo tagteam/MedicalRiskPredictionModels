@@ -20,14 +20,22 @@ fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovol
 fit 
 ```
 
-```{r   }
+[[file:```{r   }
 # Chunk4
+library(FactoMineR)
+Vars <- ivftrain[,c("cyclelen","bmi","weight","age","ant.foll","fsh","ovolume")]
+fit <- PCA(Vars,scale.unit=TRUE,ncp=5,graph=FALSE)
+plot(fit,new.plot=FALSE,choix="var") 
+```]]
+
+```{r   }
+# Chunk5
 fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),data=ivftrain)
 coef(fit) 
 ```
 
 ```{r   }
-# Chunk5
+# Chunk6
 fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
             data=ivftrain,
             penalty=10)
@@ -35,7 +43,7 @@ coef(fit)
 ```
 
 ```{r   }
-# Chunk6
+# Chunk7
 fit1 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
             data=ivftrain,penalty=0)
 fit2 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
@@ -46,46 +54,46 @@ summary(x,what="score")
 ```
 
 ```{r   }
-# Chunk7
+# Chunk8
 fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovolume,data=ivftrain,family="binomial")
 publish(fit) 
 ```
 
 ```{r   }
-# Chunk8
+# Chunk9
 library(penalized)
 form <- Surv(survtime,survstatus)~ age + tumorthickness + genderMale + tobaccoNever + deep.invasionYes + siteFloor.of.Mouth + siteHard.Palate + siteLower.Gum + siteRetromolar.Trigone + siteTongue + siteUpper.Gum + raceNonCauc + x.posnodes + tumormaxdimension + vascular.invasionYes
 # Elastic net
-fit.elnet <- penalized(form, data=octrain, model="cox",
+fit.elnet <- penalized(form, data=octrain.dummy, model="cox",
                        lambda1=1.5, lambda2=2.5) # L1 and L2 penalty 
 # LASSO
-fit.lasso <- penalized(form,data=octrain,model="cox",
+fit.lasso <- penalized(form,data=octrain.dummy,model="cox",
                        lambda1=4,lambda2=0) # no L2 penalty 
 # Ridge regression
-fit.ridge <- penalized(form,data=octrain,model="cox",
+fit.ridge <- penalized(form,data=octrain.dummy,model="cox",
                        lambda1=0,lambda2=3) # no L1 penalty  
 ```
 
 ```{r   }
-# Chunk9
+# Chunk10
 # sequence of candidate penalty values 
-penalities <- c(0,0.01,...,1000)
+penalities <- c(0,0.01,10,100,1000)
 # sequence of fitted LASSO models
 fit.penal <- lapply(penalities,function(pen){
-  penalizedS3(form,data=octrain,model="cox",lambda2=0,lambda1=pen)
+  penalizedS3(form,data=octrain.dummy,model="cox",lambda2=0,lambda1=pen)
 })
 # cross-validated Brier score and AUC
 x.steps <- Score(fit.penal, 
                  formula=Surv(survtime,survstatus)~1,
                  seed=9, # random seed
-                 data=octrain, # training data
+                 data=octrain.dummy, # training data
                  times=60, # prediction time horizon
                  split.method="cv5",# 5-fold cross-validation
                  B=5) # repeated 5 times 
 ```
 
 ```{r   }
-# Chunk10
+# Chunk11
 library(randomForest) # Liaw & Wiener
 fit.rf <- randomForest(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 library(randomForestSRC) # Ishwaran & Kogalur
@@ -93,7 +101,7 @@ fit.rfsrc <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 ```
 
 ```{r   }
-# Chunk11
+# Chunk12
 set.seed(98)
 fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
 set.seed(98)
@@ -104,7 +112,7 @@ summary(x,what="score")
 ```
 
 ```{r   }
-# Chunk12
+# Chunk13
 set.seed(98)
 fit3 <- ranger(OHSS~age+ant.foll,data=ivftrain,num.tree=1000,
                probability=1)
@@ -114,7 +122,7 @@ summary(x,what="score")
 ```
 
 ```{r   }
-# Chunk13
+# Chunk14
 set.seed(98)
 fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000,nodesize=28)
 set.seed(98)
@@ -128,7 +136,7 @@ summary(x,what="score")
 ```
 
 ```{r   }
-# Chunk14
+# Chunk15
 set.seed(1) # the model depends on the random seed
 nn <- neuralnet(ohss ~ age + ant.foll,
                 data=ivftrain,
@@ -137,7 +145,7 @@ nn <- neuralnet(ohss ~ age + ant.foll,
 ```
 
 ```{r   }
-# Chunk15
+# Chunk16
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
             data=octrain.cc, x=TRUE, y=TRUE, surv=TRUE)
 set.seed(1972)
@@ -152,7 +160,7 @@ level1.data
 ```
 
 ```{r   }
-# Chunk16
+# Chunk17
 library(SuperLearner)
 set.seed(17) # the result depends on the random seed
 fit <- SuperLearner(Y=ivftrain[["ohss"]],X=ivftrain[,c("age","ant.foll")],SL.library=c("SL.glm","SL.randomForest","SL.nnet"),family="binomial")
@@ -160,7 +168,7 @@ fit$coef
 ```
 
 ```{r   }
-# Chunk17
+# Chunk18
 fit1 <- glm(OHSS~age+ant.foll,data=ivftrain,family="binomial")
 set.seed(2)
 fit2 <- randomForest(OHSS~age+ant.foll,data=ivftrain,ntree=1000,importance=0)
@@ -178,7 +186,7 @@ summary(x,what="score")
 ```
 
 ```{r   }
-# Chunk18
+# Chunk19
 p <- predict(fit,newdata=data.frame(age=25,ant.foll=17))
 p 
 ```

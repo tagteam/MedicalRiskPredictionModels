@@ -27,7 +27,10 @@ result <- foreach(s=1:B,.combine="rbind")%dopar%{
              delta.AUC=100*x$AUC$contrasts$delta.AUC,
              delta.Brier=-100*x$Brier$contrasts$delta.Brier[3])
 }
-boxplot(result)
+boxplot(result,names=c("NRI",
+                       "IDI",
+                       expression(paste(Delta,"AUC")),
+                       expression(paste(Delta,"Brier"))))
 abline(h=0,col=2) 
 ```
 

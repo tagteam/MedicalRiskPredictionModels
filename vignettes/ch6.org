@@ -6,7 +6,7 @@ dataMRPM()
 #+END_SRC
 
 # Chunk: 1-------
-#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes
 # Chunk1
 # conventional model
 fit1 <- lrm(ohss~ant.foll+cyclelen+smoking+age,data=ivftrain)
