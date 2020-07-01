@@ -19,8 +19,8 @@ library(riskRegression)
 # Kaplan-Meier estimate in training set
 km <- prodlim(Hist(survtime,survstatus)~1,data=octrain)
 # Predicted risk at 5 and 10 years in test set
-octest[,km.risk5:=predictRisk(km,newdata=octest,times=60)]
-octest[,km.risk10:=predictRisk(km,newdata=octest,times=120)]
+octest[,km.risk5:=rep(predictRisk(km,newdata=octest,times=60),.N)]
+octest[,km.risk10:=rep(predictRisk(km,newdata=octest,times=120),.N)]
 # Predicted risks do not depend on predictor variables
 octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)] 
 ```
