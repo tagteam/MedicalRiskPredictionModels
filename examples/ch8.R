@@ -1,0 +1,152 @@
+library(MedicalRiskPredictionModels)
+dataMRPM()
+
+# Chunk1
+fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + no.cig.d + ovolume,data=ivftrain,family="binomial")
+
+# Chunk2
+fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + no.cig.d + ovolume,data=ivftrain,family="binomial")
+fit
+
+# Chunk3
+fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovolume,data=ivftrain,family="binomial")
+fit
+
+# Chunk4
+library(FactoMineR)
+Vars <- ivftrain[,c("cyclelen","bmi","weight","age","ant.foll","fsh","ovolume")]
+fit <- PCA(Vars,scale.unit=TRUE,ncp=5,graph=FALSE)
+plot(fit,new.plot=FALSE,choix="var")
+
+# Chunk5
+fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),data=ivftrain)
+coef(fit)
+
+# Chunk6
+fit <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
+            data=ivftrain,
+            penalty=10)
+coef(fit)
+
+# Chunk7
+fit1 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
+            data=ivftrain,penalty=0)
+fit2 <- lrm(ohss~ smoking+ rcs(cyclelen,3) + rcs(bmi,3) + rcs(weight,3) + rcs(age,3) + rcs(ant.foll,3) + rcs(fsh,3) + rcs(ovolume,3),
+            data=ivftrain,
+            penalty=1)
+x <- Score(list(unpenalized=fit1,penalized=fit2),data=ivftest,formula=ohss~1)
+summary(x,what="score")
+
+# Chunk8
+fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovolume,data=ivftrain,family="binomial")
+publish(fit)
+
+# Chunk9
+library(penalized)
+form <- Surv(survtime,survstatus)~ age + tumorthickness + genderMale + tobaccoNever + deep.invasionYes + siteFloor.of.Mouth + siteHard.Palate + siteLower.Gum + siteRetromolar.Trigone + siteTongue + siteUpper.Gum + raceNonCauc + x.posnodes + tumormaxdimension + vascular.invasionYes
+# Elastic net
+fit.elnet <- penalized(form, data=octrain.dummy, model="cox",
+                       lambda1=1.5, lambda2=2.5) # L1 and L2 penalty 
+# LASSO
+fit.lasso <- penalized(form,data=octrain.dummy,model="cox",
+                       lambda1=4,lambda2=0) # no L2 penalty 
+# Ridge regression
+fit.ridge <- penalized(form,data=octrain.dummy,model="cox",
+                       lambda1=0,lambda2=3) # no L1 penalty
+
+# Chunk10
+# sequence of candidate penalty values 
+penalities <- c(0,0.01,10,100,1000)
+# sequence of fitted LASSO models
+fit.penal <- lapply(penalities,function(pen){
+  penalizedS3(form,data=octrain.dummy,model="cox",lambda2=0,lambda1=pen)
+})
+# cross-validated Brier score and AUC
+x.steps <- Score(fit.penal, 
+                 formula=Surv(survtime,survstatus)~1,
+                 seed=9, # random seed
+                 data=octrain.dummy, # training data
+                 times=60, # prediction time horizon
+                 split.method="cv5",# 5-fold cross-validation
+                 B=5) # repeated 5 times
+
+# Chunk11
+library(randomForest) # Liaw & Wiener
+fit.rf <- randomForest(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
+library(randomForestSRC) # Ishwaran & Kogalur
+fit.rfsrc <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
+
+# Chunk12
+set.seed(98)
+fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000)
+set.seed(98)
+fit2 <- randomForest(OHSS~age+ant.foll,data=ivftrain,ntree=1000)
+x <- Score(list("Ishwaran & Kogalur"=fit1,"Liaw & Wiener"=fit2),
+           data=ivftest,formula=OHSS~1,summary="ipa")
+summary(x,what="score")
+
+# Chunk13
+set.seed(98)
+fit3 <- ranger(OHSS~age+ant.foll,data=ivftrain,num.tree=1000,
+               probability=1)
+x <- Score(list("Wright & Ziegeler"=fit3),
+           data=ivftest,formula=OHSS~1,summary="ipa")
+summary(x,what="score")
+
+# Chunk14
+set.seed(98)
+fit1 <- rfsrc(OHSS~age+ant.foll,data=ivftrain,n.tree=1000,nodesize=28)
+set.seed(98)
+fit2 <- randomForest(OHSS~age+ant.foll,data=ivftrain,n.tree=1000,nodesize=28)
+set.seed(98)
+fit3 <- ranger(OHSS~age+ant.foll,data=ivftrain,
+               num.tree=1000,min.node.size =28,probability=1)
+x <- Score(list("Ishwaran & Kogalur"=fit1,"Liaw & Wiener"=fit2,"Wright & Ziegeler"=fit3),
+           data=ivftest,formula=OHSS~1,summary="ipa")
+summary(x,what="score")
+
+# Chunk15
+set.seed(1) # the model depends on the random seed
+nn <- neuralnet(ohss ~ age + ant.foll,
+                data=ivftrain,
+                hidden=5, # tuning parameter 
+                act.fct = "logistic") # outcome activation function
+
+# Chunk16
+fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=octrain.cc, x=TRUE, y=TRUE, surv=TRUE)
+set.seed(1972)
+fit2 <- rfsrc(Surv(survtime,survstatus)~ age+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,data=octrain.cc)
+x <- Score(list("Cox"=fit1,"Forest"=fit2),
+           data=octest.cc,
+           formula=Surv(survtime,survstatus)~1,
+           times=120,
+           summary=c("risks"))
+level1.data <- dcast(ID ~model,value.var="risk",data=x$risks$score)
+level1.data
+
+# Chunk17
+library(SuperLearner)
+set.seed(17) # the result depends on the random seed
+fit <- SuperLearner(Y=ivftrain[["ohss"]],X=ivftrain[,c("age","ant.foll")],SL.library=c("SL.glm","SL.randomForest","SL.nnet"),family="binomial")
+fit$coef
+
+# Chunk18
+fit1 <- glm(OHSS~age+ant.foll,data=ivftrain,family="binomial")
+set.seed(2)
+fit2 <- randomForest(OHSS~age+ant.foll,data=ivftrain,ntree=1000,importance=0)
+set.seed(3)
+fit3 <- predict(nnet(OHSS~age+ant.foll,data=ivftrain,size=2),newdata=ivftest)
+set.seed(4)
+SL.fit <- SuperLearner(Y=ivftrain[["ohss"]],
+                       X=ivftrain[,c("age","ant.foll")],
+                       SL.library=c("SL.glm","SL.randomForest","SL.nnet"),
+                       family="binomial")
+fit4 <- predict(SL.fit,newdata=ivftest[,.(age,ant.foll)])$pred
+x <- Score(list("Logistic regression"=fit1,"Random Forest"=fit2,"Neural net"=fit3,"super learner"=fit4),
+           data=ivftest,formula=OHSS~1,summary="ipa")
+summary(x,what="score")
+
+# Chunk19
+p <- predict(fit,newdata=data.frame(age=25,ant.foll=17))
+p
