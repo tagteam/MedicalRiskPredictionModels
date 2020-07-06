@@ -4,11 +4,26 @@ This repository provides synthetic (computer modified) data and
 R-codes for all chapters. To conveniently run the codes on your
 computer there are the following two options.
 
-** Option 1: clone and install (for advanced R-studio users)
+
+
+** Option 1: download manually
+
+*** Step 1
+
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+library(devtools)
+install_github("tagteam/MedicalRiskPredictionModels")
+#+END_SRC
+
+*** Step 2
+
+Find the =chX.R= file in subdirectory =examples= and try the code.
+    
+** Option 2: clone (for advanced R-studio users)
 
 *** Step 1 
 
-Create a new 
+Create a new project 
 
 *** Step 2
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
