@@ -1,6 +1,6 @@
 ```{r   }
 library(MedicalRiskPredictionModels)
-dataMRPM() 
+prepareExamples() 
 ```
 
 ```{r   }
@@ -20,13 +20,13 @@ fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + ovol
 fit 
 ```
 
-[[file:```{r   }
+```{r   }
 # Chunk4
 library(FactoMineR)
 Vars <- ivftrain[,c("cyclelen","bmi","weight","age","ant.foll","fsh","ovolume")]
 fit <- PCA(Vars,scale.unit=TRUE,ncp=5,graph=FALSE)
 plot(fit,new.plot=FALSE,choix="var") 
-```]]
+```
 
 ```{r   }
 # Chunk5

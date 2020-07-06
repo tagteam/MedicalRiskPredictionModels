@@ -1,5 +1,5 @@
 library(MedicalRiskPredictionModels)
-dataMRPM()
+prepareExamples()
 
 # Chunk1
 fit <- glm(ohss~ cyclelen + bmi + weight + age + ant.foll + fsh + smoking + no.cig.d + ovolume,data=ivftrain,family="binomial")

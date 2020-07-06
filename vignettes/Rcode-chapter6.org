@@ -1,9 +1,8 @@
-[[./ch6.Rmd][Open R-markdown version of this file]]
 #+superman-export-target: rmd/html
 
 #+BEGIN_SRC R :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache no
 library(MedicalRiskPredictionModels)
-dataMRPM()
+prepareExamples()
 #+END_SRC
 
 # Chunk: 1-------

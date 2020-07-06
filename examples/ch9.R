@@ -1,5 +1,5 @@
 library(MedicalRiskPredictionModels)
-dataMRPM()
+prepareExamples()
 
 # Chunk1
 B <- 200

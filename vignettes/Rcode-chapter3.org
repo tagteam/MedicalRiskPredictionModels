@@ -2,7 +2,7 @@
 
 #+BEGIN_SRC R :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache no
 library(MedicalRiskPredictionModels)
-dataMRPM()
+prepareExamples()
 #+END_SRC
 
 # Chunk: 1-------

@@ -1,5 +1,5 @@
 library(MedicalRiskPredictionModels)
-dataMRPM()
+prepareExamples()
 
 # Chunk1
 foreach(s=c(8,9991,176)) %do% { # loop the value s through

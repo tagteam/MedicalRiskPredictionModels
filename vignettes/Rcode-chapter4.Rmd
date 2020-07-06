@@ -1,6 +1,6 @@
 ```{r   }
 library(MedicalRiskPredictionModels)
-dataMRPM() 
+prepareExamples() 
 ```
 
 ```{r   }
