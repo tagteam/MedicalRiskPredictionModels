@@ -5,19 +5,18 @@ prepareExamples()
 library(Publish)
 library(data.table)
 data(Diabetes)
-setDT(Diabetes)
-Diabetes[1:5,.(weight,height)]
+Diabetes[1:5,c("weight","height")]
 
 # Chunk2
-library(data.table)
-Diabetes[,height.m:= height*0.0254]
-Diabetes[,weight.kg:= weight* 0.4535929]
-Diabetes[,bmi:= weight.kg/height.m^2]
-Diabetes[,BMI:=cut(bmi,c(0,18,25,30,Inf),labels=c("UnderWeight","NormalWeight","OverWeight","Obese"))]
-Diabetes[,.(bmi,BMI,weight,height)]
+Diabetes$height.m <-  Diabetes$height*0.0254
+Diabetes$weight.kg <-  Diabetes$weight*0.4535929
+Diabetes$bmi <-  Diabetes$weight.kg/Diabetes$height.m^2
+Diabetes$BMI <- cut(Diabetes$bmi,c(0,18,25,30,Inf),labels=c("UnderWeight","NormalWeight","OverWeight","Obese"))
+Diabetes[,c("weight","height","bmi","BMI")]
 
 # Chunk3
 library(data.table)
+setDT(long)
 long <- long[,list("psa.time"=psadate-psadate[1],psadate,psa),by=subject]
 long <- long[psa.time<=(2*365.25),]
 # psa doubling time formula
@@ -29,42 +28,38 @@ long[,list("psa.doublingtime"=psadt(psa.time,psa)),by=subject]
 
 # Chunk4 (no competing risks)
 library(data.table)
-d[,af.date:=as.Date(af.date)]
-d[,death.date:=as.Date(death.date)]
-d[,lost.date:=as.Date(lost.date)]
-d[,time:=pmin(  # parallel minimum
-     death.date, # event 
-     lost.date,  # lost to follow up
+d$af.date <- as.Date(d$af.date)
+d$death.date <- as.Date(d$death.date)
+d$lost.date <- as.Date(d$lost.date)
+d$time <- pmin(  # parallel minimum
+     d$death.date, # event 
+     d$lost.date,  # lost to follow up
      as.Date("2015-01-01") # administrative censoring
-,na.rm=TRUE)
--af.date # date of subject specific time origin
-]
-d[,event:=0] # initialize all subjects
-d[!is.na(death.date),event:=1] # event 
+    ,na.rm=TRUE)-d$af.date # date of subject specific time origin
+d$event <- 0 # initialize all subjects
+d[!is.na(d$death.date),]$event <- 1 # event 
 d
 
 # Chunk5 (with competing risks)
 library(data.table)
-d[,af.date:=as.Date(af.date)]
-d[,stroke.date:=as.Date(stroke.date)]
-d[,death.date:=as.Date(death.date)]
-d[,lost.date:=as.Date(lost.date)]
-d[,time:=pmin(    # parallel minimum
-     stroke.date, # event 
-     death.date,  # competing risk 
-     lost.date,   # lost to follow up
-     as.Date("2015-01-01") # administrative censoring
-,na.rm=TRUE)
--af.date # date of subject specific time origin
-]
-d[,event:=0] # initialize all subjects
-d[!is.na(stroke.date),event:=1] # event 
-d[!is.na(death.date) & is.na(stroke.date),event:=2] # competing
+d$af.date <- as.Date(d$af.date)
+d$stroke.date <- as.Date(d$stroke.date)
+d$death.date <- as.Date(d$death.date)
+d$lost.date <- as.Date(d$lost.date)
+d$time <- pmin(  # parallel minimum
+  d$stroke.date, # event 
+  d$death.date,  # competing risk 
+  d$lost.date,   # lost to follow up
+  as.Date("2015-01-01") # administrative censoring
+ ,na.rm=TRUE) -d$af.date # date of subject specific time origin
+d$event <- 0 # initialize all subjects
+d[!is.na(d$stroke.date),]$event <- 1 # event 
+d[!is.na(d$death.date) & is.na(d$stroke.date),]$event <- 2 # competing
 d
 
 # Chunk6
 library(data.table)
-d[,time.5:=pmin(time,5*365.25)]
-d[,event.5:=event]
-d[time>5*365.25,event.5:=0]
-d[,.(time,event,time.5,event.5)]
+d$time.5 <- pmin(d$time,5*365.25)
+d$event.5 <- d$event
+d[d$time>5*365.25,]$event.5 <- 0
+d[,c("time","event","time.5","event.5")]

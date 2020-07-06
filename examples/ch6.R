@@ -8,7 +8,8 @@ fit1 <- lrm(ohss~ant.foll+cyclelen+smoking+age,data=ivftrain)
 fit2 <- lrm(ohss~rcs(ant.foll,3)*smoking+cyclelen+age+fsh+bmi+ovolume,data=ivftrain,penalty=10)
 # head to head comparison in test dataset
 x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
-           data=ivftest, formula=ohss~1, summary=c("risks","ipa"))
+           data=ivftest, formula=ohss~1, summary=c("risks","ipa"),
+           plots=c("roc","cal"))
 # scatterplot showing predicted risks of the rival models  
 plotRisk(x,
          col=c("gray22","black"),
@@ -28,6 +29,8 @@ plotCalibration(x,auc.in.legend=1,brier.in.legend=1)
 plotROC(x)
 
 # Chunk6
+dd <- datadist(octrain.cc)
+options(datadist="dd")
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+rcs(tumorthickness,3)+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,data=octrain.cc,x=TRUE,surv=TRUE)
 surv <- Survival(fit1)
 plot(nomogram(fit1,fun=list(function(x) 1-surv(60, x),

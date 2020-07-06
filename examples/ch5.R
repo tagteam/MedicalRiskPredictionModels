@@ -106,6 +106,16 @@ fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
 Score(list("CSC"=fit),data=astest,formula=Hist(asprogtime,asprog)~1,times=3,metrics="auc",cause="progression")
 
 # Chunk16
+fit <- CSC(list(Hist(asprogtime,asprog)~psa+ct1+diaggs,
+		Hist(asprogtime,asprog)~age),
+	   data=astrain,cause="progression")
+x <- Score(list("CSC"=fit),
+           data=astest,
+           formula=Hist(asprogtime,asprog)~1,
+           times=3,
+           metrics="auc",
+           plots="ROC",
+           cause="progression")
 plotROC(x,plot.main="Outcome: 3 year cancer progression")
 
 # Chunk17

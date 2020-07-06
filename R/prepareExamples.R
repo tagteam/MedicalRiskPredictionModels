@@ -1,7 +1,7 @@
 ## Version: 
-## Last-Updated: Jul  5 2020 (12:52) 
+## Last-Updated: Jul  6 2020 (19:10) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 131
+##     Update #: 133
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -51,9 +51,7 @@ prepareExamples <- function(){
     # --------------------------------------------------------------------------------------------------
     ## in vitro fertilization study
     # --------------------------------------------------------------------------------------------------
-    requireNamespace("data.table")
     data(ivf)
-    data.table::setDT(ivf)
     ivf$smoking  <- factor(ivf$smoking,levels=c("No","Yes"),labels=c("No","Yes"))
     ivf$OHSS <- factor(ivf$OHSS,levels=c("No","Yes"),labels=c("No","Yes"))
     set.seed(17)
@@ -65,7 +63,6 @@ prepareExamples <- function(){
     # oral cancer study
     # --------------------------------------------------------------------------------------------------
     data(oc)
-    setDT(oc)
     oc$grade=factor(oc$grade,levels=c("Well","Moderate","Poor"))
     oc$gender=factor(oc$gender,levels=c("Female","Male"),labels=c("Female","Male"))
     oc$tobacco=factor(oc$tobacco,levels=c("","Ever","Never"),labels=c("","Ever","Never"))
@@ -95,18 +92,17 @@ prepareExamples <- function(){
     # active surveillance prostate cancer study
     # --------------------------------------------------------------------------------------------------
     data(as)
-    setDT(as)
     set.seed(17)
-    as$train=1:NROW(as)%in%sample(1:NROW(as),replace=FALSE,size=round(0.63*NROW(as)))
-    as$asprog=factor(as$asprog,levels=0:2,labels=c("0","progression","death"))
-    setnames(as,"lpsaden","psa")
+    as$train <- 1:NROW(as)%in%sample(1:NROW(as),replace=FALSE,size=round(0.63*NROW(as)))
+    as$asprog <- factor(as$asprog,levels=0:2,labels=c("0","progression","death"))
+    as$psa <- as$lpsaden
+    as$lpsaden <- NULL
     astrain <- as[as$train==TRUE,]
     astest <- as[as$train==FALSE,]
     # --------------------------------------------------------------------------------------------------
     ## psa longitudinal form
     # --------------------------------------------------------------------------------------------------
     data(long)
-    setDT(long)
     long$psadate <- as.Date(long$psadate,format="%Y-%m-%d")
     psadt <- function(psa.time,psa.val){(log(2)/coef(lm(log(psa.val)~psa.time))[2])/365.25}
     ## setkey(long,subject,psadate)
@@ -116,7 +112,6 @@ prepareExamples <- function(){
     # --------------------------------------------------------------------------------------------------
     data(ttedata)
     d <- ttedata
-    setDT(d)
     ## d <- data.frame(id=c(1:5),
     ## af.date=c("2001-04-25","1995-02-16","2001-09-09","1999-12-20","1997-05-27"),
     ## death.date=c(NA,"2011-10-27",NA,"2009-01-02",NA),
@@ -131,6 +126,7 @@ prepareExamples <- function(){
     assign("ivftrain",ivftrain, pos=.GlobalEnv)
     assign("ivftest",ivftest, pos=.GlobalEnv)
     assign("oc",oc, pos=.GlobalEnv)
+    assign("oc.cc",oc.cc, pos=.GlobalEnv)
     assign("octrain",octrain, pos=.GlobalEnv)
     assign("octest",octest, pos=.GlobalEnv)
     assign("octrain.cc",octrain.cc, pos=.GlobalEnv)

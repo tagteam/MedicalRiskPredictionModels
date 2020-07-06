@@ -8,9 +8,9 @@ foreach(s=c(8,9991,176)) %do% { # loop the value s through
   set.seed(s)
   N <- NROW(oc.cc) # total sample size
   M <- round(0.632*NROW(oc.cc)) # learning sample size
-  oc.cc[,inbag:=1:N%in%sample(1:N,replace=FALSE,size=M)] # random split variable (TRUE for learning, FALSE for validation)
-  train <- oc.cc[inbag==TRUE]
-  test <- oc.cc[inbag==FALSE]
+  oc.cc$inbag <- 1:N%in%sample(1:N,replace=FALSE,size=M) # random split variable (TRUE for learning, FALSE for validation)
+  train <- oc.cc[inbag==TRUE,]
+  test <- oc.cc[inbag==FALSE,]
   # fit models in learning set 
   fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
               data=train, x=TRUE, y=TRUE, surv=TRUE)
@@ -25,7 +25,7 @@ foreach(s=c(8,9991,176)) %do% { # loop the value s through
              )$Brier$contrast[3]$delta # difference in Brier score
 }
 
-# Chunk2 (may take a while to run)
+# Chunk2 (takes a while to run, use multiple cores to speed up)
 fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+site+race+x.posnodes+tumormaxdimension+vascular.invasion,
             data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
 set.seed(1972)
@@ -36,8 +36,9 @@ x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
            times=60,
            split.method="cv10", # 10-fold cross-validation
            B=10, # repeat 10-fold 10 times
-           seed=9, # fix randomness of the split
+           seed=9, # fix randomness of the splits
            se.fit=0, # no standard errors
+           ncpus=2,  # number of cores on computer
            summary="IPA")
 summary(x,what="score")[[1]]
 
@@ -85,15 +86,19 @@ x <- Score(list("Conventional"=fit1,"Experimental"=fit2),
 summary(x,what="contrasts")
 
 # Chunk7
-fit1 <- cph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
-fit2 <- cph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
+oc.cc$survtime.5years <- pmin(oc.cc$survtime,60) # stop time after 5 years
+oc.cc$survstatus.5years <- oc.cc$survstatus # take a copy 
+oc.cc[oc.cc$survtime>60,]$survstatus.5years <- 0 # reset status
+fit1 <- coxph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE)
+fit2 <- coxph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE)
 x <- Score(list("Unstopped"=fit1,"Stopped.5yrs"=fit2),
            data=oc.cc,
            formula=Surv(survtime,survstatus)~1,
            times=60,
+           seed=8,
            summary=c("IPA"),
            null.model=1,
            split.method="loob",
-           B=2000)
+           B=200)
