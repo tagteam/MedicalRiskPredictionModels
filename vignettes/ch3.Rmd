@@ -43,7 +43,7 @@ d[,death.date:=as.Date(death.date)]
 d[,lost.date:=as.Date(lost.date)]
 d[,time:=pmin(  # parallel minimum
      death.date, # event 
-     lost.date,  # lost to followup
+     lost.date,  # lost to follow up
      as.Date("2015-01-01") # administrative censoring
 ,na.rm=TRUE)
 -af.date # date of subject specific time origin
@@ -63,7 +63,7 @@ d[,lost.date:=as.Date(lost.date)]
 d[,time:=pmin(    # parallel minimum
      stroke.date, # event 
      death.date,  # competing risk 
-     lost.date,   # lost to followup
+     lost.date,   # lost to follow up
      as.Date("2015-01-01") # administrative censoring
 ,na.rm=TRUE)
 -af.date # date of subject specific time origin

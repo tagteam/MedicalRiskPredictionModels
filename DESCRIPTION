@@ -29,4 +29,4 @@ Imports:
 Maintainer: Thomas Alexander Gerds <tag@biostat.ku.dk>
 Description: The package provides synthetic computer modified data all the visible R-codes of the book  
 License: GPL (>= 2)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

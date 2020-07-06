@@ -81,8 +81,10 @@ library(rms)
 # fit Cox regression models
 fit1=cph(Surv(survtime,survstatus)~tumorthickness,
          data=octrain,x=1,y=1)
+# lsp means linear spline
 fit2=cph(Surv(survtime,survstatus)~lsp(tumorthickness,c(.5,1,3)),
          data=octrain,x=1,y=1)
+# rcs means restricted cubic spline
 fit3=cph(Surv(survtime,survstatus)~rcs(tumorthickness,3),
          data=octrain,x=1,y=1)
 # select tumor thickness values for which to predict

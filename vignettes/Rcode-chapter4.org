@@ -1,19 +1,33 @@
-```{r   }
-library(MedicalRiskPredictionModels)
-dataMRPM() 
-```
+#+superman-export-target: rmd/html
 
-```{r   }
+#+BEGIN_SRC R :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache no
+library(MedicalRiskPredictionModels)
+dataMRPM()
+#+END_SRC
+
+# Chunk: 1-------
+#+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  :eval never
+# Chunk1
+library(data.table)
+oc[,survtime.5years:=pmin(survtime,60)] # stop time after 5 years
+oc[,survstatus.5years:=survstatus] # take a copy 
+oc[survtime>60,survstatus.5years:=0] # reset status
+oc[,.(survtime,survstatus,survtime.5years,survstatus.5years)]
+#+END_SRC
+
+# Chunk: 2-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk2
 # logistic regression in learn data
 nullmodel <- glm(ohss~1,data=ivftrain,family="binomial") 
 # predicted risk in test data
 ivftest[,risk.null:=predictRisk(nullmodel,newdata=ivftest)]
 # result does not depend on predictor variables
-ivftest[1:5,.(cyclelen,bmi,age,smoking,ant.foll,risk.null)] 
-```
+ivftest[1:5,.(cyclelen,bmi,age,smoking,ant.foll,risk.null)]
+#+END_SRC
 
-```{r   }
+# Chunk: 3-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk3
 library(riskRegression)
 # Kaplan-Meier estimate in training set
@@ -22,10 +36,11 @@ km <- prodlim(Hist(survtime,survstatus)~1,data=octrain)
 octest[,km.risk5:=rep(predictRisk(km,newdata=octest,times=60),.N)]
 octest[,km.risk10:=rep(predictRisk(km,newdata=octest,times=120),.N)]
 # Predicted risks do not depend on predictor variables
-octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)] 
-```
+octest[1:5,.(age,gender,tobacco,tumorthickness,km.risk5,km.risk10)]
+#+END_SRC
 
-```{r   }
+# Chunk: 4-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk4
 library(riskRegression)
 # Aalen-Johansen estimate in training set
@@ -34,66 +49,75 @@ aj <- prodlim(Hist(asprogtime,asprog)~1,data=astrain)
 astest[,aj.progrisk3:=predictRisk(aj,newdata=astest,times=3,cause="progression")]
 astest[,aj.deathrisk3:=predictRisk(aj,newdata=astest,times=3,cause="death")]
 # Predicted risks do not depend on predictor variables
-astest[1:5,.(age5,psa,ct1,diaggs,aj.progrisk3,aj.deathrisk3)] 
-```
+astest[1:5,.(age5,psa,ct1,diaggs,aj.progrisk3,aj.deathrisk3)]
+#+END_SRC
 
-```{r   }
+# Chunk: 5-------
+#+BEGIN_SRC R :exports code :eval (never-plain-export) :results output   :session *R* :cache yes 
 # Chunk5
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
-publish(fit,intercept=1) 
-```
+publish(fit,intercept=1)
+#+END_SRC
 
-```{r   }
+# Chunk: 6-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk6
 library(data.table)
 fit <- glm(ohss~smoking,data=ivftrain,family="binomial")
 nd <- data.table(smoking=c("No","Yes"))
 nd[,risk.ohss:=predictRisk(fit,newdata=nd)]
-nd 
-```
+nd
+#+END_SRC
 
-```{r   }
+# Chunk: 7-------
+#+BEGIN_SRC R  :results output raw  :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk7
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
-publish(fit) 
-```
+publish(fit)
+#+END_SRC
 
-```{r   }
+# Chunk: 8-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk8
 fit <- coxph(Surv(survtime, survstatus)~grade+gender,
              data=octrain,x=1)
 nd <- data.table(expand.grid(grade=c("Well","Moderate","Poor"),gender=c("Male","Female")))
 nd[,risk.10years:=predictRisk(fit,times=120,newdata=nd)]
-nd 
-```
+nd
+#+END_SRC
 
-```{r   }
+# Chunk: 9-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk9
 fit <- CSC(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain)
-publish(fit,diaggs="Gleason score",ct1="Clinical stage") 
-```
+publish(fit,diaggs="Gleason score",ct1="Clinical stage")
+#+END_SRC
 
-```{r   }
+# Chunk: 10-------
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer  :session *R* :cache yes 
 # Chunk10
 fit <- FGR(Hist(asprogtime,asprog)~diaggs+ct1,data=astrain,
            cause="progression")
-publish(fit) 
-```
+publish(fit)
+#+END_SRC
 
-```{r   }
+# Chunk: 11-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk11
 ivftrain[,age5:=age/5] # odds ratio per 5 year increase of age
-fit <- glm(ohss~age5,data=ivftrain,family="binomial") 
-```
+fit <- glm(ohss~age5,data=ivftrain,family="binomial")
+#+END_SRC
 
-```{r   }
+# Chunk: 12-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk12
 library(rms)
-fit <- lrm(ohss~rcs(age),data=ivftrain) 
-```
+fit <- lrm(ohss~rcs(age),data=ivftrain)
+#+END_SRC
 
-```{r   }
+# Chunk: 13-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk13
 library(rms)
 # fit Cox regression models
@@ -115,10 +139,11 @@ R3=predictRisk(fit3, newdata=nd,times=120)
 nd[,"10-year risk linear":=100*R1]
 nd[,"10-year risk linear spline":=100*R2]
 nd[,"10-year risk cubic spline":=100*R3]
-publish(nd,digits=1) 
-```
+publish(nd,digits=1)
+#+END_SRC
 
-```{r   }
+# Chunk: 14-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk14
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
@@ -129,10 +154,11 @@ nd=expand.grid(diaggs=c("GNA","3 and 3","3 and 4"),
 # predict 3-year risk of progression
 R1 <- 100*predictRisk(fit1,newdata=nd,cause="progression",times=3)
 R2 <- 100*predictRisk(fit2,newdata=nd,cause="progression",times=3)
-cbind(nd,"No interaction term"=R1,"With interaction term"=R2) 
-```
+cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
+#+END_SRC
 
-```{r   }
+# Chunk: 15-------
+#+BEGIN_SRC R :exports both :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 # Chunk15
 fit1 <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family="binomial")
 fit2 <- glm(ohss~ant.foll*smoking+age,data=ivftrain,family="binomial")
@@ -142,10 +168,11 @@ nd <- expand.grid(ant.foll=c(10,30,50),
                   smoking=factor(c("Yes","No")))
 R1 <- 100*predictRisk(fit1,newdata=nd)
 R2 <- 100*predictRisk(fit2,newdata=nd)
-cbind(nd,"Without interaction term"=R1,"With interaction term"=R2) 
-```
+cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
+#+END_SRC
 
-```{r   }
+# Chunk: 16-------
+#+BEGIN_SRC R :exports code :eval (never-plain-export) :results output raw drawer   :session *R* :cache yes 
 # Chunk16
 library(rms)
 fit1 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain)
@@ -160,60 +187,68 @@ nd=expand.grid(ant.foll=c(10,20),
 R1=100*predictRisk(fit1,nd)
 R2=100*predictRisk(fit2,nd)
 R3=100*predictRisk(fit3,nd)
-cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3) 
-```
+cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
+#+END_SRC
 
-```{r   }
+# Chunk: 17-------
+#+BEGIN_SRC R  :results output   :exports both  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk17
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
-            ,data=octrain,y=1,x=1) 
-```
+            ,data=octrain,y=1,x=1)
+#+END_SRC
 
-```{r   }
+# Chunk: 18-------
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk18
 tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,data=octrain,
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
-tab1 
-```
+tab1
+#+END_SRC
 
-```{r   }
+# Chunk: 19-------
+#+BEGIN_SRC R  :results output   :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk19
 ivf[,set:=factor(train,levels=c(TRUE,FALSE),
                  labels=c("Training","Validation"))]
 tab1 <- summary(utable(set~Q(age)+cyclelen+Q(bmi)+fsh+ant.foll+smoking,data=ivf),
                 show.pvalues=0)
-tab1 
-```
+tab1
+#+END_SRC
 
-```{r   }
+# Chunk: 20-------
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk20
 tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followup.time=5)
-tab2 
-```
+tab2
+#+END_SRC
 
-```{r   }
+# Chunk: 21-------
+#+BEGIN_SRC R  :results output raw drawer  :exports code  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk21
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
-publish(fit,probindex=TRUE) 
-```
+publish(fit,probindex=TRUE)
+#+END_SRC
 
-```{r   }
+# Chunk: 22-------
+#+BEGIN_SRC R  :results output raw drawer  :exports both  :eval (never-plain-export) :session *R* :cache yes 
 # Chunk22
 fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
            data=astrain, times=5, cause="progression")
-publish(fit) 
-```
+publish(fit)
+#+END_SRC
 
-```{r   }
+# Chunk: 23-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk23 
 uu <- datadist(ivf)
 options(datadist="uu")
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
-              funlabel=paste0("Risk of OHSS"))) 
-```
+              funlabel=paste0("Risk of OHSS")))
+#+END_SRC
 
-```{r   }
+# Chunk: 24-------
+#+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk24 
 u <- datadist(octrain)
 options(datadist="u")
@@ -225,6 +260,6 @@ nom <- nomogram(fit, fun=list(function(x) 1-surv(60, x),
                               function(x) 1-surv(120, x)),
                 funlabel=c("5-year risk", 
                            "10-year risk"))
-plot(nom, xfrac=.5) 
-```
+plot(nom, xfrac=.5)
+#+END_SRC
 

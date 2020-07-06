@@ -37,7 +37,7 @@ plotROC(x)
 fit <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family=binomial)
 x <- Score(list("My-model"=fit), data=ivftest, formula=ohss~1,
 	    plots="calibration")
-plotCalibration(x,bars=1,rug=1,q=10) 
+plotCalibration(x,bars=1,q=10) 
 ```
 
 ```{r   }
@@ -47,7 +47,10 @@ plotCalibration(x,bars=1,q=3)
 
 ```{r   }
 # Chunk7
-plotCalibration(x) 
+layout(matrix(c(1,2),nrow=2),height=c(.7,0.3))
+plotCalibration(x)
+boxplot(x$Calibration$plotframe$risk,horizontal=TRUE, 
+        main="",xlab="",axes=FALSE,ylim=c(0,1)) 
 ```
 
 ```{r   }
@@ -106,8 +109,11 @@ fit <- coxph(Surv(survtime,survstatus)~age+tumorthickness+grade,data=octrain,x=1
 x <- Score(list("Cox"=fit), data=octest,
 	   formula=Surv(survtime,survstatus)~1,
 	   times=120, plots="calibration")
-a <- plotCalibration(x, pseudo=0, rug=1, cens.method="local",
-		plot.main="Outcome: 10 year all-cause mortality") 
+layout(matrix(c(1,2),nrow=2),height=c(.7,0.3))
+plotCalibration(x, pseudo=0, rug=1, cens.method="local",
+	plot.main="Outcome: 10 year all-cause mortality")
+boxplot(x$Calibration$plotframe$risk,horizontal=TRUE,
+        main="",xlab="",axes=FALSE,ylim=c(0,1)) 
 ```
 
 ```{r   }
