@@ -29,6 +29,8 @@ Imports:
     rms (>= 5.1.3)
 Suggests:
     grid,
+    FactoMineR,
+    PredictABEL,
     rpart,
     ggpubr,
     penalized,

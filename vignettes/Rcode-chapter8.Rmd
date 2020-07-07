@@ -77,10 +77,13 @@ fit.ridge <- penalized(form,data=octrain.dummy,model="cox",
 ```{r   }
 # Chunk10
 # sequence of candidate penalty values 
-penalities <- c(0,0.01,10,100,1000)
+penalities <- c(0.01,10,100,1000)
 # sequence of fitted LASSO models
 fit.penal <- lapply(penalities,function(pen){
-  penalizedS3(form,data=octrain.dummy,model="cox",lambda2=0,lambda1=pen)
+  fit <- penalizedS3(form,data=octrain.dummy,model="cox",lambda2=0,lambda1=pen,
+                     trace=FALSE)
+  fit$call$lambda1 <- eval(pen)
+  fit
 })
 # cross-validated Brier score and AUC
 x.steps <- Score(fit.penal, 
