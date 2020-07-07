@@ -76,6 +76,11 @@ library(rms)
 fit <- lrm(ohss~rcs(age),data=ivftrain)
 
 # Chunk13
+fit <-
+coxph(Surv(survtime,survstatus)~tumorthickness,data=octrain,
+      y=TRUE,x=TRUE)
+
+# Chunk14
 library(rms)
 # fit Cox regression models
 fit1=cph(Surv(survtime,survstatus)~tumorthickness,
@@ -98,7 +103,7 @@ nd$"10-year risk linear spline" <- 100*R2
 nd$"10-year risk cubic spline" <- 100*R3
 publish(nd,digits=1)
 
-# Chunk14
+# Chunk15
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
 # select 12 examples
@@ -110,7 +115,7 @@ R1 <- 100*predictRisk(fit1,newdata=nd,cause="progression",times=3)
 R2 <- 100*predictRisk(fit2,newdata=nd,cause="progression",times=3)
 cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
 
-# Chunk15
+# Chunk16
 fit1 <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family="binomial")
 fit2 <- glm(ohss~ant.foll*smoking+age,data=ivftrain,family="binomial")
 # select 6 examples
@@ -121,7 +126,7 @@ R1 <- 100*predictRisk(fit1,newdata=nd)
 R2 <- 100*predictRisk(fit2,newdata=nd)
 cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
 
-# Chunk16
+# Chunk17
 library(rms)
 fit1 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain)
 fit2 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain,penalty=5)
@@ -137,43 +142,43 @@ R2=100*predictRisk(fit2,nd)
 R3=100*predictRisk(fit3,nd)
 cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
 
-# Chunk17
+# Chunk18
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
             ,data=octrain,y=1,x=1)
 
-# Chunk18
+# Chunk19
 tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,data=octrain,
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
 tab1
 
-# Chunk19
+# Chunk20
 ivf$set <- factor(ivf$train,levels=c(TRUE,FALSE),
                  labels=c("Training","Validation"))
 tab1 <- summary(utable(set~Q(age)+cyclelen+Q(bmi)+fsh+ant.foll+smoking,data=ivf),
                 show.pvalues=0)
 tab1
 
-# Chunk20
+# Chunk21
 tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followup.time=5)
 tab2
 
-# Chunk21
+# Chunk22
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
 publish(fit,probindex=TRUE)
 
-# Chunk22
+# Chunk23
 fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
            data=astrain, times=5, cause="progression")
 publish(fit)
 
-# Chunk23 
+# Chunk24 
 uu <- datadist(ivf)
 options(datadist="uu")
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
 plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
               funlabel=paste0("Risk of OHSS")))
 
-# Chunk24 
+# Chunk25 
 u <- datadist(octrain)
 options(datadist="u")
 fit <- cph(Surv(survtime,survstatus)~age*grade+gender+rcs(tumorthickness),

@@ -2,7 +2,7 @@ library(MedicalRiskPredictionModels)
 prepareExamples()
 
 # Chunk1
-foreach(s=c(8,9991,176)) %do% { # loop the value s through
+foreach(s=c(9,4991,175)) %do% { # loop the value s through
   # three different start values 
   # for the random number generator
   set.seed(s)
@@ -89,16 +89,15 @@ summary(x,what="contrasts")
 oc.cc$survtime.5years <- pmin(oc.cc$survtime,60) # stop time after 5 years
 oc.cc$survstatus.5years <- oc.cc$survstatus # take a copy 
 oc.cc[oc.cc$survtime>60,]$survstatus.5years <- 0 # reset status
-fit1 <- coxph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE)
-fit2 <- coxph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE)
+fit1 <- coxph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
+fit2 <- cph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
 x <- Score(list("Unstopped"=fit1,"Stopped.5yrs"=fit2),
            data=oc.cc,
            formula=Surv(survtime,survstatus)~1,
            times=60,
-           seed=9,
            summary=c("IPA"),
            null.model=1,
            split.method="loob",
-           B=200)
+           B=200) # could be 2000

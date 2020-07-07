@@ -1,7 +1,7 @@
 ## Version: 
-## Last-Updated: Jul  6 2020 (19:10) 
+## Last-Updated: Jul  7 2020 (20:05) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 133
+##     Update #: 134
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -65,11 +65,11 @@ prepareExamples <- function(){
     data(oc)
     oc$grade=factor(oc$grade,levels=c("Well","Moderate","Poor"))
     oc$gender=factor(oc$gender,levels=c("Female","Male"),labels=c("Female","Male"))
-    oc$tobacco=factor(oc$tobacco,levels=c("","Ever","Never"),labels=c("","Ever","Never"))
-    oc$deep.invasion=factor(oc$deep.invasion,levels=c("","No","Yes"),labels=c("","No","Yes"))
+    oc$tobacco=factor(oc$tobacco,levels=c("Ever","Never"),labels=c("Ever","Never"))
+    oc$deep.invasion=factor(oc$deep.invasion,levels=c("No","Yes"),labels=c("No","Yes"))
     oc$site=factor(oc$site,levels=c("Buccal Mucosa","Floor of Mouth","Hard Palate","Lower Gum","Retromolar Trigone","Tongue","Upper Gum"),labels=c("Buccal Mucosa","Floor of Mouth","Hard Palate","Lower Gum","Retromolar Trigone","Tongue","Upper Gum"))
     oc$race=factor(oc$race,levels=c("Caucasian","NonCauc"),labels=c("Caucasian","NonCauc"))
-    oc$vascular.invasion=factor(oc$vascular.invasion,levels=c("","No","Yes"),labels=c("","No","Yes"))
+    oc$vascular.invasion=factor(oc$vascular.invasion,levels=c("No","Yes"),labels=c("No","Yes"))
     oc$Grade=factor(oc$Grade,levels=c("Moderate/Well","Poor"),labels=c("Moderate/Well","Poor"))
     # split into train and test
     set.seed(17)

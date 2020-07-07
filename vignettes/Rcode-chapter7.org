@@ -8,7 +8,7 @@ prepareExamples()
 # Chunk: 1-------
 #+BEGIN_SRC R  :results output raw  :exports code  :eval (never-plain-export) :session *R* :cache yes  
 # Chunk1
-foreach(s=c(8,9991,176)) %do% { # loop the value s through
+foreach(s=c(9,4991,175)) %do% { # loop the value s through
   # three different start values 
   # for the random number generator
   set.seed(s)
@@ -124,6 +124,6 @@ x <- Score(list("Unstopped"=fit1,"Stopped.5yrs"=fit2),
            summary=c("IPA"),
            null.model=1,
            split.method="loob",
-           B=2000)
+           B=200) # could be 2000
 #+END_SRC
 

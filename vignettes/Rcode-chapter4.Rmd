@@ -95,6 +95,13 @@ fit <- lrm(ohss~rcs(age),data=ivftrain)
 
 ```{r   }
 # Chunk13
+fit <-
+coxph(Surv(survtime,survstatus)~tumorthickness,data=octrain,
+      y=TRUE,x=TRUE) 
+```
+
+```{r   }
+# Chunk14
 library(rms)
 # fit Cox regression models
 fit1=cph(Surv(survtime,survstatus)~tumorthickness,
@@ -119,7 +126,7 @@ publish(nd,digits=1)
 ```
 
 ```{r   }
-# Chunk14
+# Chunk15
 fit1 <- CSC(Hist(asprogtime,asprog)~psa+ct1+diaggs,data=astrain,cause="progression")
 fit2 <- CSC(Hist(asprogtime,asprog)~psa*ct1+diaggs,data=astrain,cause="progression")
 # select 12 examples
@@ -133,7 +140,7 @@ cbind(nd,"No interaction term"=R1,"With interaction term"=R2)
 ```
 
 ```{r   }
-# Chunk15
+# Chunk16
 fit1 <- glm(ohss~ant.foll+smoking+age,data=ivftrain,family="binomial")
 fit2 <- glm(ohss~ant.foll*smoking+age,data=ivftrain,family="binomial")
 # select 6 examples
@@ -146,7 +153,7 @@ cbind(nd,"Without interaction term"=R1,"With interaction term"=R2)
 ```
 
 ```{r   }
-# Chunk16
+# Chunk17
 library(rms)
 fit1 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain)
 fit2 <- lrm(ohss~rcs(ant.foll,3)+rcs(age,3)+rcs(cyclelen,3)+smoking,data=ivftrain,penalty=5)
@@ -164,20 +171,20 @@ cbind(nd,"no penalty"=R1,"penalty 5"=R2,"penalty 10"=R3)
 ```
 
 ```{r   }
-# Chunk17
+# Chunk18
 fit <- coxph(Surv(survtime,survstatus)~tumorthickness + age + gender * race * tobacco * site
             ,data=octrain,y=1,x=1) 
 ```
 
 ```{r   }
-# Chunk18
+# Chunk19
 tab1 <- summary(utable(gender~age+deep.invasion+tobacco+tumorthickness+grade,data=octrain,
                        summary.format="median(x) (IQR(x)) [range(x)]"),show.pvalue=0)
 tab1 
 ```
 
 ```{r   }
-# Chunk19
+# Chunk20
 ivf$set <- factor(ivf$train,levels=c(TRUE,FALSE),
                  labels=c("Training","Validation"))
 tab1 <- summary(utable(set~Q(age)+cyclelen+Q(bmi)+fsh+ant.foll+smoking,data=ivf),
@@ -186,26 +193,26 @@ tab1
 ```
 
 ```{r   }
-# Chunk20
+# Chunk21
 tab2 <- followupTable(Hist(asprogtime,asprog)~age+ct1+erg.status,data=as,followup.time=5)
 tab2 
 ```
 
 ```{r   }
-# Chunk21
+# Chunk22
 fit <- coxph(Surv(survtime,survstatus)~age+gender+tumorthickness+grade,data=octrain)
 publish(fit,probindex=TRUE) 
 ```
 
 ```{r   }
-# Chunk22
+# Chunk23
 fit <- ARR(Hist(asprogtime, asprog)~ct1+erg.status+age5+psa+ppb5+lmax,
            data=astrain, times=5, cause="progression")
 publish(fit) 
 ```
 
 ```{r   }
-# Chunk23 
+# Chunk24 
 uu <- datadist(ivf)
 options(datadist="uu")
 fit <- lrm(ohss~age+rcs(ant.foll)+smoking,data=ivf)
@@ -214,7 +221,7 @@ plot(nomogram(fit,fun=function(x)1/(1+exp(-x)),  # or fun=plogis
 ```
 
 ```{r   }
-# Chunk24 
+# Chunk25 
 u <- datadist(octrain)
 options(datadist="u")
 fit <- cph(Surv(survtime,survstatus)~age*grade+gender+rcs(tumorthickness),
