@@ -89,15 +89,16 @@ summary(x,what="contrasts")
 oc.cc$survtime.5years <- pmin(oc.cc$survtime,60) # stop time after 5 years
 oc.cc$survstatus.5years <- oc.cc$survstatus # take a copy 
 oc.cc[oc.cc$survtime>60,]$survstatus.5years <- 0 # reset status
-fit1 <- coxph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
-fit2 <- cph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+tobacco+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
-            data=oc.cc, x=TRUE, y=TRUE, surv=TRUE)
+fit1 <- coxph(Surv(survtime,survstatus)~rcs(age,3)+tumorthickness+gender+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE)
+fit2 <- coxph(Surv(survtime.5years,survstatus.5years)~rcs(age,3)+tumorthickness+gender+deep.invasion+race+x.posnodes+tumormaxdimension+vascular.invasion,
+            data=oc.cc, x=TRUE, y=TRUE)
 x <- Score(list("Unstopped"=fit1,"Stopped.5yrs"=fit2),
            data=oc.cc,
            formula=Surv(survtime,survstatus)~1,
            times=60,
+           seed=9,
            summary=c("IPA"),
            null.model=1,
            split.method="loob",
-           B=2000)
+           B=200)
