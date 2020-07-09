@@ -1,5 +1,9 @@
 * Online material for Medical Risk Prediction Models (Gerds & Kattan) 
 
+Reference: Gerds, T.A. and Kattan, M.W. 2021. Medical Risk Prediction
+Models: With Ties to Machine Learning. Chapman & Hall/CRC, Boca Raton,
+FL.
+
 This repository provides synthetic (computer modified) data and
 R-codes for all chapters. To conveniently run the codes on your
 computer there are the following two options.
