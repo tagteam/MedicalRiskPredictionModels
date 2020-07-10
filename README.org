@@ -20,33 +20,37 @@ if(require(devtools)==FALSE) install
 install_github("tagteam/MedicalRiskPredictionModels",dep=TRUE)
 #+END_SRC
 
-** Option 1: download manually
+** Step 1 
 
-#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-library(devtools)
-install_github("tagteam/MedicalRiskPredictionModels")
-#+END_SRC
+Install the most recent version of the R-package =riskRegression:=
 
-*** Step 1
-
-
-
-*** Step 2
-
-Find the =chX.R= file in subdirectory =examples= and try the code.
-    
-** Option 2: clone (for advanced R-studio users)
-
-*** Step 1 
-
-Create a new project 
-
-*** Step 2
 #+ATTR_LATEX: :options otherkeywords={}, deletekeywords={}
 #+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
-library(devtools)
-install_github("tagteam/MedicalRiskPredictionModels")
+devtools::install_github("tagteam/MedicalRiskPredictionModels")
 #+END_SRC
 
-** Option 2: all manual (for less advanced users)
+** Step 2
 
+Install the most recent version of the R-package =MedicalRiskPredictionModels:=
+
+#+BEGIN_SRC R  :results output raw  :exports code  :session *R* :cache yes  
+devtools::install_github("tagteam/MedicalRiskPredictionModels")
+#+END_SRC
+
+** Step 3
+
+*** Option 1 download
+
+Navigate to the subdirectory =examples= of the githup repository and
+download the files with the R-code, alternatively use the
+corresponding R-markdown files in the subdirectory =vignettes=.
+    
+*** Option 2: clone (for advanced R-studio users)
+
+Create a new project via version control, see
+- https://r4ds.had.co.nz/workflow-projects.html
+- https://happygitwithr.com/rstudio-git-github.html
+
+Find the chapter specific R-codes in the subdirectory =examples= of
+the project, alternatively use the corresponding R-markdown files in
+the subdirectory =vignettes=.
