@@ -4,9 +4,12 @@
 Models: With Ties to Machine Learning. Chapman & Hall/CRC, Boca Raton,
 FL.
 
-#+ATTR_html: :width 300px
-  [[./book-cover.png]]
-
+#+BEGIN_SRC html  :results output figure :exports results
+<div class="figure">
+<p><img src="./book-cover.png" alt="book-cover.png" width="300px" />
+</p>
+</div>
+#+END_SRC
 
 This repository provides synthetic (computer modified) data and
 R-codes for all chapters. To conveniently run the codes on your
