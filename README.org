@@ -4,6 +4,7 @@
 Models: With Ties to Machine Learning. Chapman & Hall/CRC, Boca Raton,
 FL.
 
+#+ATTR_html: :width 300px
   [[./book-cover.png]]
 
 
